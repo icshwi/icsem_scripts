@@ -3,7 +3,7 @@
 #  Copyright (c) 2016 Jeong Han Lee
 #  Copyright (c) 2016 European Spallation Source ERIC
 #
-#  The setTimingSystem.bash is free software: you can redistribute
+#  The setcpciEvg230.bash is free software: you can redistribute
 #  it and/or modify it under the terms of the GNU General Public License
 #  as published by the Free Software Foundation, either version 2 of the
 #  License, or any newer version.
@@ -16,7 +16,7 @@
 #  You should have received a copy of the GNU General Public License along with
 #  this program. If not, see https://www.gnu.org/licenses/gpl-2.0.txt
 #
-# Shell  : setTimingSystem.bash
+# Shell  : setcpciEvg230.bash
 # Author : Jeong Han Lee
 # email  : han.lee@esss.se
 # Date   : 
@@ -55,22 +55,6 @@ function checkstr() {
 declare -gr SUDO_CMD="sudo"
 
 
-function yum_mrf(){
-    
-    local func_name=${FUNCNAME[*]}
-    local mrfioc2_kernel_module_name="mrf"
-    local mrfioc2_kernel_module="kmod-mrfioc2"
-
-    ini_func ${func_name}
-	
-    checkstr ${SUDO_CMD}
-    #    declare extra_package_list="emacs tree screen lightdm"
-
-    ${SUDO_CMD} yum -y install ${mrfioc2_kernel_module}
-    ${SUDO_CMD} modprobe ${mrfioc2_kernel_module_name}
-    INFO_list+=("$(modinfo ${mrfioc2_kernel_module_name})")
-    end_func ${func_name}
-}
 
 function print_st() {
 
@@ -80,19 +64,49 @@ function print_st() {
     local bus=${1}
     local device=${2}
     local fucntion=${3}
-    declare system="testcPCI-EVG-230"
+
+    declare system="ICS-CPCIEVG-230"
+
+    declare epics_db="evg-cpci.db";
+    declare mrf_device="EVG0";
+
 
     printf "\n\n%s\n\n" "------------ snip snip ------------";
+    printf "%s\n" "# This file should be used with EPICS base 3.14.12.5 and mrfioc2 2.1.0";
+    printf "%s\n" "# With current EEE 1.8.2, the proper command is ";
+    printf "%s\n" "# $ iocsh -3.14.12.5 cpci-evg-230_0.cmd";
 
-    printf "epicsEnvSet("\"SYS\""             "\"%s\"")\n"   "$system";  
+    printf "\nrequire mrfioc2,2.1.0\n\n";
+
+    printf "epicsEnvSet("\"SYS\""             "\"%s\"")\n"   "$system"; 
+    printf "epicsEnvSet("\"EVG\""             "\"%s\"")\n"   "$mrf_device"
     printf "epicsEnvSet("\"EVG_PCIBUS\""      "\"0x%s\"")\n" "$bus";
-    printf "epicsEnvSet("\"EVG_PCIDEVICES\""  "\"0x%s\"")\n" "$device";
+    printf "epicsEnvSet("\"EVG_PCIDEVICE\""   "\"0x%s\"")\n" "$device";
     printf "epicsEnvSet("\"EVG_PCIFUNCTION\"" "\"0x%s\"")\n" "$function";
-    printf "\nrequire mrfioc2,2.1.0\n\n"
-    printf "%s\n" "mrmEvgSetupPCI("$\(EVG\)", "$\(EVG_PCIBUS\)", "$\(EVG_PCIDEVICE\)", "$\(EVG_PCIFUNCTION\)")"
+
+    printf "%s\n" "mrmEvgSetupPCI("$\(EVG\)", "$\(EVG_PCIBUS\)", "$\(EVG_PCIDEVICE\)", "$\(EVG_PCIFUNCTION\)")";
+    printf "\ndbLoadRecords(\"%s\", \"EVG=\$(EVG), SYS=\$(SYS)\")" "$epics_db"
+    printf "\n\n%s\n\n" "------------ snip snip ------------";
+
+    printf "You should run this via the following command : \niocsh -3.14.12.5 cpci-evg-230_0.cmd\n";
 
     printf "\n\n%s\n\n" "------------ snip snip ------------";
-    
+    printf "%s\n" "# This file should be used with EPICS base 3.15.4 and mrfioc2 2.7.13";
+    printf "%s\n" "# With current EEE 1.8.2, the proper command is ";
+    printf "%s\n" "# $ iocsh cpci-evg-230_0.cmd";
+    printf "# or\n%s\n" "# $ iocsh -3.15.4 cpci-evg-230_0.cmd";
+    printf "\nrequire mrfioc2,2.7.13\n\n";
+    printf "epicsEnvSet("\"SYS\""             "\"%s\"")\n"   "$system"; 
+    printf "epicsEnvSet("\"EVG\""             "\"%s\"")\n"   "$mrf_device"
+    printf "epicsEnvSet("\"EVG_PCIBUS\""      "\"0x%s\"")\n" "$bus";
+    printf "epicsEnvSet("\"EVG_PCIDEVICE\""   "\"0x%s\"")\n" "$device";
+    printf "epicsEnvSet("\"EVG_PCIFUNCTION\"" "\"0x%s\"")\n" "$function";
+
+    printf "%s\n" "mrmEvgSetupPCI("$\(EVG\)", "$\(EVG_PCIBUS\)", "$\(EVG_PCIDEVICE\)", "$\(EVG_PCIFUNCTION\)")";
+    printf "\ndbLoadRecords(\"%s\", \"DEVICE=\$(EVG), SYS=\$(SYS)\")" "$epics_db"
+    printf "\n\n%s\n\n" "------------ snip snip ------------";
+
+    printf "You should run this via the following command : \niocsh cpci-evg-230_0.cmd\n";
     end_func ${func_name}
 }
 
@@ -126,9 +140,6 @@ do
     sleep 60;
     kill -0 "$$" || exit;
 done 2>/dev/null &
-
-
-yum_mrf
 
 
 

@@ -76,3 +76,102 @@ Field 4 : 9030     device ID "PCI9030 32-bit 33MHz PCI <-> IOBus Bridge" https:/
 ls /sys/bus/pci/devices/0000\:16\:09.0/
 
 
+
+[root@ip6-6 icsem_scripts]# udevadm info --query=all /dev/uio* --attribute-walk
+
+Udevadm info starts with the device specified by the devpath and then
+walks up the chain of parent devices. It prints for every device
+found, all possible attributes in the udev rules key format.
+A rule to match, can be composed by the attributes of the device
+and the attributes from one single parent device.
+
+  looking at device '/devices/pci0000:00/0000:00:1e.0/0000:16:09.0/uio/uio0':
+    KERNEL=="uio0"
+    SUBSYSTEM=="uio"
+    DRIVER==""
+    ATTR{name}=="mrf-pci"
+    ATTR{event}=="0"
+    ATTR{version}=="1"
+
+  looking at parent device '/devices/pci0000:00/0000:00:1e.0/0000:16:09.0':
+    KERNELS=="0000:16:09.0"
+    SUBSYSTEMS=="pci"
+    DRIVERS=="mrf-pci"
+    ATTRS{irq}=="17"
+    ATTRS{subsystem_vendor}=="0x1a3e"
+    ATTRS{broken_parity_status}=="0"
+    ATTRS{class}=="0x118000"
+    ATTRS{consistent_dma_mask_bits}=="32"
+    ATTRS{dma_mask_bits}=="32"
+    ATTRS{local_cpus}=="f"
+    ATTRS{device}=="0x9030"
+    ATTRS{enable}=="1"
+    ATTRS{msi_bus}==""
+    ATTRS{local_cpulist}=="0-3"
+    ATTRS{vendor}=="0x10b5"
+    ATTRS{subsystem_device}=="0x20e6"
+    ATTRS{numa_node}=="-1"
+    ATTRS{d3cold_allowed}=="1"
+
+  looking at parent device '/devices/pci0000:00/0000:00:1e.0':
+    KERNELS=="0000:00:1e.0"
+    SUBSYSTEMS=="pci"
+    DRIVERS==""
+    ATTRS{irq}=="0"
+    ATTRS{subsystem_vendor}=="0x0000"
+    ATTRS{broken_parity_status}=="0"
+    ATTRS{class}=="0x060401"
+    ATTRS{consistent_dma_mask_bits}=="32"
+    ATTRS{dma_mask_bits}=="32"
+    ATTRS{local_cpus}=="f"
+    ATTRS{device}=="0x2448"
+    ATTRS{enable}=="1"
+    ATTRS{msi_bus}=="1"
+    ATTRS{local_cpulist}=="0-3"
+    ATTRS{vendor}=="0x8086"
+    ATTRS{subsystem_device}=="0x0000"
+    ATTRS{numa_node}=="-1"
+    ATTRS{d3cold_allowed}=="0"
+
+  looking at parent device '/devices/pci0000:00':
+    KERNELS=="pci0000:00"
+    SUBSYSTEMS==""
+    DRIVERS==""
+
+
+Put the rule : mrf in /etc/modules-load.d/mrf.conf to load the mrf module at boot time.
+
+[iocuser@ip6-6 icsem_scripts]$ cat /etc/modules-load.d/mrf.conf 
+mrf
+
+
+Put the rule : SUBSYSTEM=="uio", ATTR{name}=="mrf-pci", MODE="0660" in /etc/udev/rules.d/mrf.rules to be accessible via an user.
+
+
+[iocuser@ip6-6 icsem_scripts]$ cat /etc/udev/rules.d/mrf.rules 
+SUBSYSTEM=="uio", ATTR{name}=="mrf-pci", MODE="0660"
+[iocuser@ip6-6 icsem_scripts]$ 
+
+
+
+Reboot
+
+[iocuser@ip6-6 ~]$ lsmod |grep mrf
+mrf                    13496  0 
+uio                    19259  1 mrf
+parport                42348  3 mrf,ppdev,parport_pc
+[iocuser@ip6-6 ~]$ 
+
+[iocuser@ip6-6 ~]$ modinfo mrf
+filename:       /lib/modules/3.10.0-229.7.2.el7.x86_64/extra/mrf.ko
+author:         Michael Davidsaver <mdavidsaver@bnl.gov>
+version:        1
+license:        GPL v2
+rhelversion:    7.1
+srcversion:     413C2B392FB742253E61904
+depends:        parport,uio
+vermagic:       3.10.0-229.7.2.el7.x86_64 SMP mod_unload modversions 
+parm:           cable:Name of JTAG parallel port cable to emulate (charp)
+parm:           interfaceversion:User space interface version (int)
+[iocuser@ip6-6 ~]$ 
+
