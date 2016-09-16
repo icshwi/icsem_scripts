@@ -14,3 +14,5 @@ epicsEnvSet("EVG_PCIFUNCTION" "0x0")
 mrmEvgSetupPCI($(EVG), $(EVG_PCIBUS), $(EVG_PCIDEVICE), $(EVG_PCIFUNCTION))
 
 dbLoadRecords("evg-cpci.db", "DEVICE=$(EVG), SYS=$(SYS)")
+
+dbLoadRecords("evgSoftSeq.template",  "DEVICE=$(EVG), SYS=$(SYS), SEQNUM=1, NELM=3")

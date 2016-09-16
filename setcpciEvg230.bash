@@ -55,6 +55,7 @@ function checkstr() {
 declare -gr SUDO_CMD="sudo"
 
 
+# maybe better to write files directly into a dictory.
 
 function print_st() {
 

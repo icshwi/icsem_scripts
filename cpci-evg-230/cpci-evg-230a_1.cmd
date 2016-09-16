@@ -1,10 +1,8 @@
-# This file should be used with EPICS base 3.15.4 and mrfioc2 2.7.13
+# This file should be used with EPICS base 3.14.12.5 and mrfioc2 2.1.0
 # With current EEE 1.8.2, the proper command is 
-# $ iocsh cpci-evg-230_0.cmd
-# or
-# $ iocsh -3.15.4 cpci-evg-230_0.cmd
+# $ iocsh -3.14.12.5 cpci-evg-230_0.cmd
 
-require mrfioc2,2.7.13
+require mrfioc2,2.1.0
 
 epicsEnvSet("SYS"             "ICS-CPCIEVG-230")
 epicsEnvSet("EVG"             "EVG0")
@@ -13,4 +11,6 @@ epicsEnvSet("EVG_PCIDEVICE"   "0x09")
 epicsEnvSet("EVG_PCIFUNCTION" "0x0")
 mrmEvgSetupPCI($(EVG), $(EVG_PCIBUS), $(EVG_PCIDEVICE), $(EVG_PCIFUNCTION))
 
-dbLoadRecords("evg-cpci.db", "DEVICE=$(EVG), SYS=$(SYS)")
+dbLoadRecords("evg-cpci.db", "EVG=$(EVG), SYS=$(SYS)")
+
+

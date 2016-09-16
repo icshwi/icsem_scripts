@@ -14,3 +14,13 @@ epicsEnvSet("EVG_PCIFUNCTION" "0x0")
 mrmEvgSetupPCI($(EVG), $(EVG_PCIBUS), $(EVG_PCIDEVICE), $(EVG_PCIFUNCTION))
 
 dbLoadRecords("evg-cpci.db", "DEVICE=$(EVG), SYS=$(SYS)")
+
+
+iocInit
+
+
+dbpf $(SYS)-$(EVG):TrigEvt0-EvtCode-SP 14
+dbpf $(SYS)-$(EVG):Mxc0-Frequency-SP 14
+dbpf $(SYS)-$(EVG):Mxc0-TrigSrc0-SP 1
+
+dbpf $(SYS)-$(EVG):SoftEvt-Enable-Sel 1

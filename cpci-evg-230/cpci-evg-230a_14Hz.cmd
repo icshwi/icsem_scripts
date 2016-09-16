@@ -13,3 +13,18 @@ mrmEvgSetupPCI($(EVG), $(EVG_PCIBUS), $(EVG_PCIDEVICE), $(EVG_PCIFUNCTION))
 
 dbLoadRecords("evg-cpci.db", "EVG=$(EVG), SYS=$(SYS)")
 
+
+iocInit
+
+#
+
+# ICS-CPCIEVG-230-EVG0:TrigEvt0-EvtCode-SP
+# ICS-CPCIEVG-230-EVG0:Mxc0-TrigSrc0-SP
+# ICS-CPCIEVG-230-EVG0:Mxc0-Frequency-SP
+# ICS-CPCIEVG-230-EVG0:SoftEvt-Enable-Sel
+
+dbpf $(SYS)-$(EVG):TrigEvt0-EvtCode-SP 14
+dbpf $(SYS)-$(EVG):Mxc0-Frequency-SP 14
+dbpf $(SYS)-$(EVG):Mxc0-TrigSrc0-SP 1
+
+dbpf $(SYS)-$(EVG):SoftEvt-Enable-Sel 1
