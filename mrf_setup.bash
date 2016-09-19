@@ -52,6 +52,14 @@ function checkstr() {
 }
 
 
+# Generic : Global variables for git_clone, git_selection, and others
+# 
+declare -g SC_SELECTED_GIT_SRC=""
+declare -g SC_GIT_SRC_DIR=""
+declare -g SC_GIT_SRC_NAME=""
+declare -g SC_GIT_SRC_URL=""
+
+
 declare -gr SUDO_CMD="sudo"
 declare -ag INFO_list=()
 declare -i index=0
@@ -69,16 +77,159 @@ function echo_tee() {
     ${SUDO_CMD} echo $input | ${SUDO_CMD} tee ${target}
 };
 
-function yum_install_mrf(){
+# Generic : git_clone
+#
+# Required Global Variable
+# - SC_GIT_SRC_DIR  : Input
+# - SC_LOGDATE      : Input
+# - SC_GIT_SRC_URL  : Input
+# - SC_GIT_SRC_NAME : Input
+# 
+function git_clone() {
+
+    local func_name=${FUNCNAME[*]}
+    ini_func ${func_name}
+
+    checkstr ${SC_LOGDATE}
+    checkstr ${SC_GIT_SRC_URL}
+    checkstr ${SC_GIT_SRC_NAME}
     
+    if [[ ! -d ${SC_GIT_SRC_DIR} ]]; then
+	echo "No git source repository in the expected location ${SC_GIT_SRC_DIR}"
+    else
+	echo "Old git source repository in the expected location ${SC_GIT_SRC_DIR}"
+	echo "The old one is renamed to ${SC_GIT_SRC_DIR}_${SC_LOGDATE}"
+	mv  ${SC_GIT_SRC_DIR} ${SC_GIT_SRC_DIR}_${SC_LOGDATE}
+    fi
+    
+    # Alwasy fresh cloning ..... in order to workaround any local 
+    # modification in the repository, which was cloned before. 
+    #
+    git clone ${SC_GIT_SRC_URL}/${SC_GIT_SRC_NAME}
+
+    end_func ${func_name}
+}
+
+# Generic : git_selection
+#
+# Require Global vairable
+# - SC_SELECTED_GIT_SRC  : Output
+#
+function git_selection() {
+
+    local func_name=${FUNCNAME[*]}
+    ini_func ${func_name}
+    
+    local git_ckoutcmd=""
+    local checked_git_src=""
+    declare -i index=0
+    declare -i master_index=0
+    declare -i list_size=0
+    declare -i selected_one=0
+    declare -a git_src_list=()
+
+
+    git_src_list+=("master")
+    git_src_list+=($(git tag -l | sort -n))
+    
+    for tag in "${git_src_list[@]}"
+    do
+	printf "%2s: git src %34s\n" "$index" "$tag"
+	let "index = $index + 1"
+    done
+    
+    echo -n "Select master or one of tags which can be built, followed by [ENTER]:"
+
+    # don't wait for 3 characters 
+    # read -e -n 2 line
+    read -e line
+   
+    # convert a string to an integer?
+    # do I need this? 
+    # selected_one=${line/.*}
+
+    selected_one=${line}
+
+    let "list_size = ${#git_src_list[@]} - 1"
+    
+    if [[ "$selected_one" -gt "$list_size" ]]; then
+	printf "\n>>> Please select one number smaller than %s\n" "${list_size}"
+	exit 1;
+    fi
+    if [[ "$selected_one" -lt 0 ]]; then
+	printf "\n>>> Please select one number larger than 0\n" 
+	exit 1;
+    fi
+
+    SC_SELECTED_GIT_SRC="$(tr -d ' ' <<< ${git_src_list[line]})"
+    
+    printf "\n>>> Selected %34s --- \n" "${SC_SELECTED_GIT_SRC}"
+ 
+    echo ""
+    if [ "$selected_one" -ne "$master_index" ]; then
+	git_ckoutcmd="git checkout tags/${SC_SELECTED_GIT_SRC}"
+	$git_ckoutcmd
+	checked_git_src="$(git describe --exact-match --tags)"
+	checked_git_src="$(tr -d ' ' <<< ${checked_git_src})"
+	
+	printf "\n>>> Selected : %s --- \n>>> Checkout : %s --- \n" "${SC_SELECTED_GIT_SRC}" "${checked_git_src}"
+	
+	if [ "${SC_SELECTED_GIT_SRC}" != "${checked_git_src}" ]; then
+	    echo "Something is not right, please check your git reposiotry"
+	    exit 1
+	fi
+    else
+	git_ckoutcmd="git checkout ${SC_SELECTED_GIT_SRC}"
+	$git_ckoutcmd
+    fi
+    end_func ${func_name}
+ 
+}
+
+
+function git_compile_mrf(){
+    local func_name=${FUNCNAME[*]};
+    ini_func ${func_name};
+    checkstr ${SUDO_CMD};
+    #
+    #
+    SC_GIT_SRC_NAME="m-epics-mrfioc2"
+    SC_GIT_SRC_URL="https://bitbucket.org/jeonghanlee"
+    SC_GIT_SRC_DIR=${SC_TOP}/${SC_GIT_SRC_NAME}
+    MRF_KERSRC_DIR="mrmShared/linux"
+    #
+    #
+    git_clone
+    #
+    #
+    pushd ${SC_GIT_SRC_DIR}/${MRF_KERSRC_DIR}
+    ${SUDO_CMD} make 
+    popd
+    #
+    end_func ${func_name};
+}
+
+function yum_install_mrf(){
     local func_name=${FUNCNAME[*]};
     local mrfioc2_kernel_module="kmod-mrfioc2";
     ini_func ${func_name};
     checkstr ${SUDO_CMD};
-
+    
     ${SUDO_CMD} yum -y install ${mrfioc2_kernel_module};
+
+    end_func ${func_name};
+}
+
+function modprobe_mrf(){
+    
+    local func_name=${FUNCNAME[*]};
+    ini_func ${func_name};
+    checkstr ${SUDO_CMD};
+
     ${SUDO_CMD} modprobe ${MRF_KMOD_NAME};
+
     INFO_list+=("$(modinfo ${MRF_KMOD_NAME})");
+    INFO_list+=("$(lsmod |grep ${MRF_KMOD_NAME})");
 
     end_func ${func_name};
 }
@@ -86,6 +237,8 @@ function yum_install_mrf(){
 # put_mrf_rule and put_udev_rule have the same function except
 # thier rule and target, so I may combine them together. But
 # now it is better to be seperated functions.
+
+
 
 function put_mrf_rule(){
 
@@ -131,9 +284,13 @@ INFO_list+=("SCRPIT      : ${SC_SCRIPT}");
 INFO_list+=("SCRIPT NAME : ${SC_SCRIPTNAME}");
 INFO_list+=("SCRIPT TOP  : ${SC_TOP}");
 INFO_list+=("LOGDATE     : ${SC_LOGDATE}");
+
 ${SUDO_CMD} -v;
 
-yum_install_mrf;
+# yum_install_mrf;
+git_compile_mrf;
+
+modprobe_mrf;
 
 put_mrf_rule;
 
