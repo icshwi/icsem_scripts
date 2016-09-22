@@ -6,8 +6,8 @@
 
 require mrfioc2,2.7.13
 
-epicsEnvSet("SYS"             "ICS-CPCIEVG-230")
-epicsEnvSet("EVG"             "EVG0")
+epicsEnvSet("SYS"             "ICS-CPCI")
+epicsEnvSet("EVG"             "EVG230")
 epicsEnvSet("EVG_PCIBUS"      "0x16")
 epicsEnvSet("EVG_PCIDEVICE"   "0x09")
 epicsEnvSet("EVG_PCIFUNCTION" "0x0")
@@ -18,6 +18,7 @@ dbLoadRecords("evg-cpci.db", "DEVICE=$(EVG), SYS=$(SYS)")
 
 iocInit
 
+dbl > cpci-evg-230/cpci-evg-230b.pvlist
 
 dbpf $(SYS)-$(EVG):TrigEvt0-EvtCode-SP 14
 dbpf $(SYS)-$(EVG):Mxc0-Frequency-SP 14

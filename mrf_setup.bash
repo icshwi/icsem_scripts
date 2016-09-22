@@ -193,8 +193,17 @@ function git_compile_mrf(){
     checkstr ${SUDO_CMD};
     #
     #
-    SC_GIT_SRC_NAME="m-epics-mrfioc2"
-    SC_GIT_SRC_URL="https://bitbucket.org/jeonghanlee"
+    #    https://github.com/jeonghanlee/mrfioc2
+    # This is the tentative repository, which I hacked based on
+    # m-epics-mrfioc2
+
+    # SC_GIT_SRC_NAME="m-epics-mrfioc2"
+    # SC_GIT_SRC_URL="https://bitbucket.org/jeonghanlee"
+
+    SC_GIT_SRC_NAME="mrfioc2"
+    SC_GIT_SRC_URL="https://github.com//jeonghanlee"
+
+
     SC_GIT_SRC_DIR=${SC_TOP}/${SC_GIT_SRC_NAME}
     MRF_KERSRC_DIR="mrmShared/linux"
     #
@@ -203,7 +212,8 @@ function git_compile_mrf(){
     #
     #
     pushd ${SC_GIT_SRC_DIR}/${MRF_KERSRC_DIR}
-    ${SUDO_CMD} make 
+    ${SUDO_CMD} make modules modules_install clean
+    
     popd
     #
     end_func ${func_name};
