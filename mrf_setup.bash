@@ -20,7 +20,7 @@
 # Author : Jeong Han Lee
 # email  : han.lee@esss.se
 # Date   : 
-# version : 0.1.0 
+# version : 0.1.1 
 #
 # http://www.gnu.org/software/bash/manual/bashref.html#Bash-Builtins
 
@@ -295,10 +295,34 @@ INFO_list+=("SCRIPT NAME : ${SC_SCRIPTNAME}");
 INFO_list+=("SCRIPT TOP  : ${SC_TOP}");
 INFO_list+=("LOGDATE     : ${SC_LOGDATE}");
 
-${SUDO_CMD} -v;
 
-# yum_install_mrf;
-git_compile_mrf;
+DO="$1"
+
+case "$DO" in     
+    package) 
+
+	${SUDO_CMD} -v;
+	yum_install_mrf;
+	;;
+    source)
+	${SUDO_CMD} -v;
+	git_compile_mrf;
+	;;
+    *) 	
+	echo "">&2         
+	echo "usage: $0 <arg>" >&2 
+	echo ""
+        echo "          arg     : explaination" >&2 
+	echo ""        
+	echo "          package : mrf package from ESS (for cPCI) ">&2
+        echo "" 
+	echo "          git src : compile kernel module from git repository (for PCIe) ">&2
+    	echo >&2 	
+	exit 0         
+	;; 
+esac
+
+
 
 modprobe_mrf;
 
