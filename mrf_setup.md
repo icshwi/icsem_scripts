@@ -648,3 +648,6 @@ New : ICS-CPCIEVG-230-EVG0:Mxc0-Frequency-SP 14
 [iocuser@ip6-6 ~]$ 
 
 
+/opt/epics/modules/mrfioc2/2.7.13/db/evg-cpci.db
+
+

@@ -118,6 +118,9 @@ declare -g INFO_eee_compiled
 declare -g INFO_eee_iocsh
 declare -g INFO_epics_base
 declare -ag INFO_list
+
+declare -a pci_list;
+
 declare -i index=0
 
 INFO_kernel="$(uname -r)"
@@ -142,8 +145,11 @@ do
     kill -0 "$$" || exit;
 done 2>/dev/null &
 
+${SUDO_CMD} update-pciids
 
 
+# Micro-Research Finland Oy 	6718 (1A3E Hex) 
+#
 
 for info in "${INFO_list[@]}"
 do
@@ -151,7 +157,7 @@ do
     let "index = $index + 1"
 done
 
-var=$(lspci |grep 'Signal processing controller' | awk '{ print $1 }')
+var=$(lspci --mm |grep 'Signal processing controller' | awk '{ print $1 }')
 
 bus=$(echo $var | cut -d: -f1)
 device=$(echo $var | cut -d: -f2 | cut -d. -f1)

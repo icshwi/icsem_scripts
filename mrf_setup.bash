@@ -67,7 +67,6 @@ declare -gr MODULES_LOAD_DIR="/etc/modules-load.d"
 declare -gr UDEV_RULES_DIR="/etc/udev/rules.d"
 declare -gr MRF_KMOD_NAME="mrf"
 
-
 function echo_tee() {
 
     local input=${1};
@@ -290,6 +289,7 @@ function put_udev_rule(){
    end_func ${func_name};
 }
 
+
 INFO_list+=("SCRPIT      : ${SC_SCRIPT}");
 INFO_list+=("SCRIPT NAME : ${SC_SCRIPTNAME}");
 INFO_list+=("SCRIPT TOP  : ${SC_TOP}");
@@ -321,7 +321,6 @@ case "$DO" in
 	exit 0         
 	;; 
 esac
-
 
 
 modprobe_mrf;
