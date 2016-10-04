@@ -196,8 +196,8 @@ function git_compile_mrf(){
     # This is the tentative repository, which I hacked based on
     # m-epics-mrfioc2
 
-    # SC_GIT_SRC_NAME="m-epics-mrfioc2"
-    # SC_GIT_SRC_URL="https://bitbucket.org/jeonghanlee"
+#    SC_GIT_SRC_NAME="m-epics-mrfioc2"
+#    SC_GIT_SRC_URL="https://bitbucket.org/jeonghanlee"
 
     SC_GIT_SRC_NAME="mrfioc2"
     SC_GIT_SRC_URL="https://github.com//jeonghanlee"
@@ -235,6 +235,7 @@ function modprobe_mrf(){
     ini_func ${func_name};
     checkstr ${SUDO_CMD};
 
+    ${SUDO_CMD} modprobe -r ${MRF_KMOD_NAME};
     ${SUDO_CMD} modprobe ${MRF_KMOD_NAME};
 
     INFO_list+=("$(modinfo ${MRF_KMOD_NAME})");
@@ -299,12 +300,12 @@ INFO_list+=("LOGDATE     : ${SC_LOGDATE}");
 DO="$1"
 
 case "$DO" in     
-    package) 
+    pac) 
 
 	${SUDO_CMD} -v;
 	yum_install_mrf;
 	;;
-    source)
+    src)
 	${SUDO_CMD} -v;
 	git_compile_mrf;
 	;;
@@ -314,9 +315,9 @@ case "$DO" in
 	echo ""
         echo "          arg     : explaination" >&2 
 	echo ""        
-	echo "          package : mrf package from ESS (for cPCI) ">&2
+	echo "          pac : mrf package from ESS (for cPCI 230, not 220) ">&2
         echo "" 
-	echo "          git src : compile kernel module from git repository (for PCIe) ">&2
+	echo "          src : compile kernel module from git repository (for PCIe) ">&2
     	echo >&2 	
 	exit 0         
 	;; 
