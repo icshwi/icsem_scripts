@@ -3,6 +3,7 @@
 ```
 git config user.name "Jeong Han Lee"
 git config user.email "jeonghan.lee@gmail.com"
+git commit --amend --reset-author
 ```
 
 * Only one type in your id and password, and they are valid during 3600s (1h)
