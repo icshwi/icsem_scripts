@@ -67,13 +67,13 @@ declare -gr MODULES_LOAD_DIR="/etc/modules-load.d"
 declare -gr UDEV_RULES_DIR="/etc/udev/rules.d"
 declare -gr MRF_KMOD_NAME="mrf"
 
-function echo_tee() {
+function printf_tee() {
 
     local input=${1};
     local target=${2};
     local command="";
     # If target exists, it will be overwritten.
-    ${SUDO_CMD} echo $input | ${SUDO_CMD} tee ${target}
+    ${SUDO_CMD} printf "%s" "${input}" | ${SUDO_CMD} tee "${target}";
 };
 
 # Generic : git_clone
@@ -259,7 +259,7 @@ function put_mrf_rule(){
     rule=${MRF_KMOD_NAME};
     target=${MODULES_LOAD_DIR}/${MRF_KMOD_NAME}.conf;
     printf "Put the rule : %s in %s to load the mrf module at boot time.\n" "$rule" "$target";
-    echo_tee "$rule" "$target";
+    printf_tee "$rule" "$target";
 
     end_func ${func_name}
 }
@@ -285,7 +285,7 @@ function put_udev_rule(){
    target="${UDEV_RULES_DIR}/${MRF_KMOD_NAME}.rules";
    printf "Put the rule : %s in %s to be accessible via an user.\n" "$rule" "$target";
 
-   echo_tee "$rule" "$target";
+   printf_tee "$rule" "$target";
 
    end_func ${func_name};
 }
