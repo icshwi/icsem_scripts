@@ -6,7 +6,7 @@
 
 require mrfioc2,2.7.13
 
-epicsEnvSet("SYS"             "ICS-PCIEEVR-300");
+epicsEnvSet("SYS"             "ICS-PCIE-300");
 epicsEnvSet("EVR"             "EVR0");
 epicsEnvSet("EVR_PCIDOMAIN"    "0x0");
 epicsEnvSet("EVR_PCIBUS"      "0x01");
@@ -14,9 +14,9 @@ epicsEnvSet("EVR_PCIDEVICE"   "0x00");
 epicsEnvSet("EVR_PCIFUNCTION" "0x0");
 mrmEvrSetupPCI($(EVR), $(EVR_PCIDOMAIN),$(EVR_PCIBUS), $(EVR_PCIDEVICE), $(EVR_PCIFUNCTION));
 
-dbLoadRecords("./evr-pcie-300DC.db", "DEVICE=$(EVR), SYS=$(SYS)")
+#dbLoadRecords("./evr-pcie-300DC.db", "DEVICE=$(EVR), SYS=$(SYS)")
 # #dbLoadRecords("./evr-pcie-300.db", "DEVICE=$(EVR), SYS=$(SYS)")
-# #dbLoadTemplate("./evr-pcie-300DC.substitutions", "DEVICE=$(EVR), SYS=$(SYS)");
+dbLoadTemplate("./from-m-epics-mrfioc2-Db/evr-pcie-300DC.substitutions", "DEVICE=$(EVR), SYS=$(SYS)");
 
 
 # # This file should be used with EPICS base 3.15.4 and mrfioc2 2.7.13
