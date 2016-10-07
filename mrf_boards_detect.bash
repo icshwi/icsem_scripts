@@ -19,7 +19,7 @@
 # Author : Jeong Han Lee
 # email  : han.lee@esss.se
 # Date   : 
-# version : 0.1.1 
+# version : 0.2.0 
 #
 # http://www.gnu.org/software/bash/manual/bashref.html#Bash-Builtins
 
@@ -41,8 +41,8 @@ function pushd() { builtin pushd "$@" > /dev/null; }
 function popd()  { builtin popd  "$@" > /dev/null; }
 
 
-function ini_func() { printf "\n\n>>>> You are entering in the function %s\n" "${1}"; }
-function end_func() { printf "<<<< You are leaving from the function %s\n\n" "${1}"; }
+function ini_func() { printf "\n>>>> You are entering in the function %s\n" "${1}"; }
+function end_func() { printf "\n<<<< You are leaving from the function %s\n" "${1}"; }
 
 function checkstr() {
     if [ -z "$1" ]; then
@@ -77,8 +77,7 @@ function identify_mrf_boards(){
 # RELEASE=${RELEASE//\"}
 # 
     declare -i idx=0;
-
-    mrf_device_list=("$(lspci -mmDn | grep -E "\<(${PCI_VENDOR_ID_MRF})")")
+    mrf_device_list=("$(lspci -mmDn | grep -E "\<(${PCI_VENDOR_ID_MRF})" )")
        
   
 }
@@ -103,56 +102,79 @@ function identify_mrf_boards(){
 #16:0c.0 "Signal processing controller [1180]" "PLX Technology, Inc. [10b5]" "PCI9030 32-bit 33MHz PCI <-> IOBus Bridge [9030]" -r01 "Micro-Research Finland Oy [1a3e]" "CPCI Event Receiver 230 [10e6]"
 #16:0e.0 "Signal processing controller [1180]" "PLX Technology, Inc. [10b5]" "PCI9030 32-bit 33MHz PCI <-> IOBus Bridge [9030]" -r01 "Micro-Research Finland Oy [1a3e]" "CPCI Event Generator 230 [20e6]"
 
-function print_array() {
-    echo "$1" | while read a; \
-	do
-	echo $a; 
-    done
-}
-
-function get_pci_info() {
+function print_epicsEnvSet() {
     
-    echo $1 | cut -d" " -f1;
+    declare board_name=$1;
+    declare pci_info=$2;
+    declare version=$3;
+    declare domain;
+    declare bus;
+    declare dev;
+    declare func;
 
+    declare system_name="edit_me";
+    declare mrf_name="edit_me";
+    declare epics_db="edit_me";
+    declare domain_name="${board_name}_DOMAIN";
+    declare bus_name="${board_name}_BUS";
+    declare dev_name="${board_name}_DEV";
+    declare func_name="${board_name}_FUNC";
+
+    declare e3_mrfioc2_ver="2.1.0";
+    declare e3_base_ver="3.14.12.5";
+
+    if [[ $version == "new" ]]; then
+	 e3_mrfioc2_ver="2.7.13";
+	 e3_base_ver="3.15.4";
+    fi
+
+    pci_info=$(echo $pci_info | awk '{ print $1 }');
+    
+    domain=$(echo $pci_info | cut -d: -f1)
+    bus=$(echo $pci_info    | cut -d: -f2)
+    dev=$(echo $pci_info    | cut -d: -f3 | cut -d. -f1)
+    func=$(echo $pci_info   | cut -d. -f2)
+
+    printf "\n\n%s\n" "------------ snip snip ------------";
+    printf "\n\n# ESS EPICS Environment";
+    printf "\n# iocsh -%s %s.cmd" "$e3_base_ver" "\"e3_startup_script\"";
+    printf "\n# require mrfioc2,%s\n" "$e3_mrfioc2_ver";
+    printf "\n#--------------------------------------------------------\n";
+    printf "\nepicsEnvSet("\"SYS\""       "\"%s\"")" "$system_name"; 
+    printf "\nepicsEnvSet("\"%s\""       "\"%s\"")"  "$board_name" "$mrf_name"
+    printf "\nepicsEnvSet("\"%s\""   "\"0x%s\"")"    "$bus_name"   "$bus";
+    printf "\nepicsEnvSet("\"%s\""   "\"0x%s\"")"    "$dev_name"   "$dev";
+    printf "\nepicsEnvSet("\"%s\""  "\"0x%s\"")"     "$func_name"  "$func";
+    printf "\nmrmEvgSetupPCI("$\(%s\)", "$\(%s\)", "$\(%s\)", "$\(%s\)")" "$board_name" "$bus_name" "$dev_name" "$func_name";
+    printf "\n# --------------------------------------------------------\n";
+    printf "\n# dbLoadRecords example";
+    printf "\n# dbLoadRecords(\"%s\", \"DEVICE=\$(%s), SYS=\$(SYS)\")\n" "$epics_db" "$board_name" 
+    printf "\n%s\n\n" "------------ snip snip ------------";
 }
+
+version=$1;
 
 identify_mrf_boards
 
-declare -a cPCIEVG220_list=();
-declare -a PMCEVR230_list=();
-declare -a cPCIEVR230_list=();
-declare -a cPCIEVG230_list=();
-declare -a cPCIEVR300_list=();
-declare -a PCIeEVR300_list=();
-declare -a MTCAEVR300_list=();
-
-
-
-echo "$mrf_device_list" | while read a; \
+echo "$mrf_device_list" | while read ids; \
 do 
  
-    if [[ $a == *"$PCI_DEVICE_ID_MRF_PXIEVG220"* ]]; then
-	printf "cPCI EVG220 is found at %s\n" "$a";
-	cPCIEVG220_list+=$(get_pci_info $a);
-	echo $cPCIEVG220_list;
-    elif [[ $a == *"$PCI_DEVICE_ID_MRF_PMCEVR230"* ]]; then
-    	printf "PMC EVR230 is found at $s\n" "$a";
-    elif [[ $a == *"$PCI_DEVICE_ID_MRF_PXIEVR230"* ]]; then
-    	printf "cPCI EVR230 is found at %s\n" "$a";
-    elif [[ $a == *"$PCI_DEVICE_ID_MRF_PXIEVG230"* ]]; then
-    	printf "cPCI EVG230 is found at %s\n" "$a";
-    elif [[ $a == *"$PCI_DEVICE_ID_MRF_CPCIEVR300"* ]]; then
-    	printf "cPCI EVR300 is found at $s\n" "$a";
-    elif [[ $a == *"$PCI_DEVICE_ID_MRF_PCIEEVR300"* ]]; then
-    	printf "PCIe EVR300 is found at %s\n" "$a";
-    elif [[ $a == *"$PCI_DEVICE_ID_MRF_MTCAEVR300"* ]]; then
-    	printf "MTCA EVR300 is found at %s\n" "$a";
+   if [[ $ids == *"$PCI_DEVICE_ID_MRF_PXIEVG220"* ]]; then
+	print_epicsEnvSet "EVG" "$ids" "$version";
+    elif [[ $ids == *"$PCI_DEVICE_ID_MRF_PMCEVR230"* ]]; then
+	print_epicsEnvSet "EVR" "$ids" "$version";
+    elif [[ $ids == *"$PCI_DEVICE_ID_MRF_PXIEVR230"* ]]; then
+	print_epicsEnvSet "EVR" "$ids" "$version";
+    elif [[ $ids == *"$PCI_DEVICE_ID_MRF_PXIEVG230"* ]]; then
+	print_epicsEnvSet "EVG" "$ids" "$version";
+    elif [[ $ids == *"$PCI_DEVICE_ID_MRF_CPCIEVR300"* ]]; then
+	print_epicsEnvSet "EVR" "$ids" "$version";
+    elif [[ $ids == *"$PCI_DEVICE_ID_MRF_PCIEEVR300"* ]]; then
+	print_epicsEnvSet "EVR" "$ids" "$version";
+    elif [[ $ids == *"$PCI_DEVICE_ID_MRF_MTCAEVR300"* ]]; then
+	print_epicsEnvSet "EVR" "$ids" "$version";
     else
 	printf "We don't have this model %s in our DB\n" "$a";
     fi
-  
 done
-
-print_array $cPCIEVG220_list 
-
 exit
