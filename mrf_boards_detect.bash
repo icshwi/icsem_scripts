@@ -119,7 +119,7 @@ function print_epicsEnvSet() {
     declare bus_name="${board_name}_BUS";
     declare dev_name="${board_name}_DEV";
     declare func_name="${board_name}_FUNC";
-
+    declare setup_func="";
     declare e3_mrfioc2_ver="2.1.0";
     declare e3_base_ver="3.14.12.5";
 
@@ -127,6 +127,8 @@ function print_epicsEnvSet() {
 	 e3_mrfioc2_ver="2.7.13";
 	 e3_base_ver="3.15.4";
     fi
+
+    
 
     pci_info=$(echo $pci_info | awk '{ print $1 }');
     
@@ -142,10 +144,20 @@ function print_epicsEnvSet() {
     printf "\n#--------------------------------------------------------\n";
     printf "\nepicsEnvSet("\"SYS\""       "\"%s\"")" "$system_name"; 
     printf "\nepicsEnvSet("\"%s\""       "\"%s\"")"  "$board_name" "$mrf_name"
+
     printf "\nepicsEnvSet("\"%s\""   "\"0x%s\"")"    "$bus_name"   "$bus";
     printf "\nepicsEnvSet("\"%s\""   "\"0x%s\"")"    "$dev_name"   "$dev";
     printf "\nepicsEnvSet("\"%s\""  "\"0x%s\"")"     "$func_name"  "$func";
-    printf "\nmrmEvgSetupPCI("$\(%s\)", "$\(%s\)", "$\(%s\)", "$\(%s\)")" "$board_name" "$bus_name" "$dev_name" "$func_name";
+    if [[ $board_name == "EVG" ]]; then
+	printf "\nmrmEvgSetupPCI("$\(%s\)", "$\(%s\)", "$\(%s\)", "$\(%s\)")" "$board_name" "$bus_name" "$dev_name" "$func_name";
+    elif [[ $board_name == "EVR" ]]; then
+	printf "\nepicsEnvSet("\"%s\""   "\"0x%s\"")"    "$domain_name"   "$domain";
+	printf "\nmrmEvrSetupPCI("$\(%s\)", "$\(%s\)", "$\(%s\)", "$\(%s\)", "$\(%s\)")" "$board_name" "$domain_name" "$bus_name" "$dev_name" "$func_name";
+    else
+	printf "No support on $s\n" "$board_name";
+	exit;
+    fi
+
     printf "\n# --------------------------------------------------------\n";
     printf "\n# dbLoadRecords example";
     printf "\n# dbLoadRecords(\"%s\", \"DEVICE=\$(%s), SYS=\$(SYS)\")\n" "$epics_db" "$board_name" 
