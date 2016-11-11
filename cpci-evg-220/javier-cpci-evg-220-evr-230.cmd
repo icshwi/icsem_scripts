@@ -17,6 +17,8 @@ mrmEvgSetupPCI($(EVG), $(EVG_BUS), $(EVG_DEV), $(EVG_FUNC))
 # dbLoadRecords example
 dbLoadRecords("evg-cpci.db", "DEVICE=$(EVG), SYS=$(SYS)")
 
+#For the sequence
+dbLoadRecords("evgSoftSeq.template", "DEVICE=$(EVG), SYS=$(SYS), SEQNUM=1, NELM=3")
 
 
 epicsEnvSet("EVR"        "EVR230")
@@ -33,6 +35,9 @@ dbLoadRecords("evr-cpci-230.db", "DEVICE=$(EVR), SYS=$(SYS)")
 
 #Generate trigger signals
 dbLoadRecords("evr-softEvent.template", "DEVICE=$(EVR), SYS=$(SYS), CODE=14, EVT=14")
+dbLoadRecords("evr-softEvent.template", "DEVICE=$(EVR), SYS=$(SYS), CODE=1, EVT=1")
+dbLoadRecords("evr-softEvent.template", "DEVICE=$(EVR), SYS=$(SYS), CODE=2, EVT=2")
+dbLoadRecords("evr-softEvent.template", "DEVICE=$(EVR), SYS=$(SYS), CODE=3, EVT=3")
 dbLoadRecords("evr-pulserMap.template", "DEVICE=$(EVR), SYS=$(SYS), PID=0, F=Trig, ID=0, EVT=14")
 
 
@@ -51,12 +56,12 @@ dbpf $(SYS)-$(EVG):TrigEvt7-EvtCode-SP 122
 dbpf $(SYS)-$(EVG):Mxc2-Frequency-SP 1
 dbpf $(SYS)-$(EVG):Mxc2-TrigSrc7-SP 1
 
-dbpf $(SYS)-$(EVG):TrigEvt0-EvtCode-SP 14
-dbpf $(SYS)-$(EVG):Mxc0-Frequency-SP 14
-dbpf $(SYS)-$(EVG):Mxc0-TrigSrc0-SP 1
+#dbpf $(SYS)-$(EVG):TrigEvt0-EvtCode-SP 14
+#dbpf $(SYS)-$(EVG):Mxc0-Frequency-SP 14
+#dbpf $(SYS)-$(EVG):Mxc0-TrigSrc0-SP 1
 
 
-dbpf $(SYS)-$(EVG):SoftEvt-Enable-Sel 1
+#dbpf $(SYS)-$(EVG):SoftEvt-Enable-Sel 1
 
 
 mrmEvgSoftTime("$(EVG)")
@@ -65,7 +70,7 @@ dbpf $(SYS)-$(EVG):SyncTimestamp-Cmd 1
 
 
 
-dbl > cpci-evg-220/cpci-evg-220-evr-230.pvlist
+#dbl > cpci-evg-220/cpci-evg-220-evr-230.pvlist
 
 
 # what does the following messages :

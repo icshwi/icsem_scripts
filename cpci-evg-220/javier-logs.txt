@@ -1,0 +1,164 @@
+[iocuser@bodhi2 icsem_scripts]$ iocsh -3.14.12.5 cpci-evg-220/javier-cpci-evg-220-evr-230.cmd 
+
+
+iocuser@bodhi2:~/gitsrc/icsem_scripts (master)$ caget ICS-CPCI-EVG220:EvtClk-Frequency-RB
+ICS-CPCI-EVG220:EvtClk-Frequency-RB 88.0519
+
+
+
+iocuser@bodhi2:~/gitsrc/icsem_scripts (master)$ caput ICS-CPCI-EVG220:SoftSeq-1-Unload-Cmd 1
+Old : ICS-CPCI-EVG220:SoftSeq-1-Unload-Cmd 0
+New : ICS-CPCI-EVG220:SoftSeq-1-Unload-Cmd 1
+iocuser@bodhi2:~/gitsrc/icsem_scripts (master)$ caput ICS-CPCI-EVG220:SoftSeq-1-Load-Cmd 1
+Old : ICS-CPCI-EVG220:SoftSeq-1-Load-Cmd 1
+New : ICS-CPCI-EVG220:SoftSeq-1-Load-Cmd 1
+iocuser@bodhi2:~/gitsrc/icsem_scripts (master)$ caput ICS-CPCI-EVG220:SoftSeq-1-TsInpMode-Sel EGU
+Old : ICS-CPCI-EVG220:SoftSeq-1-TsInpMode-Sel EGU
+New : ICS-CPCI-EVG220:SoftSeq-1-TsInpMode-Sel EGU
+iocuser@bodhi2:~/gitsrc/icsem_scripts (master)$ caput ICS-CPCI-EVG220:SoftSeq-1-TsResolution-Sel ms
+Old : ICS-CPCI-EVG220:SoftSeq-1-TsResolution-Sel s
+New : ICS-CPCI-EVG220:SoftSeq-1-TsResolution-Sel ms
+iocuser@bodhi2:~/gitsrc/icsem_scripts (master)$ caput ICS-CPCI-EVG220:SoftSeq-1-TrigSrc-Sel Software
+Old : ICS-CPCI-EVG220:SoftSeq-1-TrigSrc-Sel None
+New : ICS-CPCI-EVG220:SoftSeq-1-TrigSrc-Sel Software
+iocuser@bodhi2:~/gitsrc/icsem_scripts (master)$ caput ICS-CPCI-EVG220:SoftSeq-1-Enable-Cmd 1
+Old : ICS-CPCI-EVG220:SoftSeq-1-Enable-Cmd 1
+New : ICS-CPCI-EVG220:SoftSeq-1-Enable-Cmd 1
+iocuser@bodhi2:~/gitsrc/icsem_scripts (master)$ caput -a ICS-CPCI-EVG220:SoftSeq-1-EvtCode-SP 3 1 2 3
+Old : ICS-CPCI-EVG220:SoftSeq-1-EvtCode-SP 3 3 0 0
+New : ICS-CPCI-EVG220:SoftSeq-1-EvtCode-SP 3 1 2 3
+iocuser@bodhi2:~/gitsrc/icsem_scripts (master)$ caput -a ICS-CPCI-EVG220:SoftSeq-1-Timestamp-SP 3 1000 2000 3000
+Old : ICS-CPCI-EVG220:SoftSeq-1-Timestamp-SP 3 2.50321e-308 0 0
+New : ICS-CPCI-EVG220:SoftSeq-1-Timestamp-SP 3 1000 2000 3000
+iocuser@bodhi2:~/gitsrc/icsem_scripts (master)$ caput -a ICS-CPCI-EVG220:SoftSeq-1-EvtMask-SP 3 0 0 0
+Old : ICS-CPCI-EVG220:SoftSeq-1-EvtMask-SP 3 3 0 0
+New : ICS-CPCI-EVG220:SoftSeq-1-EvtMask-SP 3 0 0 0
+iocuser@bodhi2:~/gitsrc/icsem_scripts (master)$ caput ICS-CPCI-EVG220:SoftSeq-1-Commit-Cmd 1
+Old : ICS-CPCI-EVG220:SoftSeq-1-Commit-Cmd 1
+New : ICS-CPCI-EVG220:SoftSeq-1-Commit-Cmd 1
+iocuser@bodhi2:~/gitsrc/icsem_scripts (master)$ caput ICS-CPCI-EVG220:SoftSeq-1-SoftTrig-Cmd 1
+Old : ICS-CPCI-EVG220:SoftSeq-1-SoftTrig-Cmd 0
+New : ICS-CPCI-EVG220:SoftSeq-1-SoftTrig-Cmd 1
+iocuser@bodhi2:~/gitsrc/icsem_scripts (master)$ caput ICS-CPCI-EVG220:SoftSeq-1-SoftTrig-Cmd 1
+Old : ICS-CPCI-EVG220:SoftSeq-1-SoftTrig-Cmd 1
+New : ICS-CPCI-EVG220:SoftSeq-1-SoftTrig-Cmd 1
+iocuser@bodhi2:~/gitsrc/icsem_scripts (master)$ 
+
+iocuser@bodhi2:~/gitsrc/icsem_scripts (master)$ camonitor ICS-CPCI-EVR230:Event-1-Cnt-I ICS-CPCI-EVR230:Event-2-Cnt-I ICS-CPCI-EVR230:Event-3-Cnt-I
+ICS-CPCI-EVR230:Event-1-Cnt-I  <undefined> 0 UDF INVALID
+ICS-CPCI-EVR230:Event-2-Cnt-I  <undefined> 0 UDF INVALID
+ICS-CPCI-EVR230:Event-3-Cnt-I  <undefined> 0 UDF INVALID
+ICS-CPCI-EVR230:Event-1-Cnt-I  2016-11-07 14:38:25.530519 1  
+ICS-CPCI-EVR230:Event-2-Cnt-I  2016-11-07 14:38:26.530525 1  
+ICS-CPCI-EVR230:Event-3-Cnt-I  2016-11-07 14:38:27.530585 1  
+ICS-CPCI-EVR230:Event-1-Cnt-I  2016-11-07 14:38:46.497832 2  
+ICS-CPCI-EVR230:Event-2-Cnt-I  2016-11-07 14:38:47.497829 2  
+ICS-CPCI-EVR230:Event-3-Cnt-I  2016-11-07 14:38:48.497837 2 
+
+
+
+iocuser@bodhi2:~/gitsrc/icsem_scripts (master)$ caput ICS-CPCI-EVG220:TrigEvt0-EvtCode-SP 14
+Old : ICS-CPCI-EVG220:TrigEvt0-EvtCode-SP 0
+New : ICS-CPCI-EVG220:TrigEvt0-EvtCode-SP 14
+iocuser@bodhi2:~/gitsrc/icsem_scripts (master)$ caput ICS-CPCI-EVG220:Mxc0-Frequency-SP 14
+Old : ICS-CPCI-EVG220:Mxc0-Frequency-SP 1
+New : ICS-CPCI-EVG220:Mxc0-Frequency-SP 14
+iocuser@bodhi2:~/gitsrc/icsem_scripts (master)$ caput ICS-CPCI-EVG220:Mxc0-TrigSrc0-SP 1
+Old : ICS-CPCI-EVG220:Mxc0-TrigSrc0-SP Clear
+New : ICS-CPCI-EVG220:Mxc0-TrigSrc0-SP Set
+iocuser@bodhi2:~/gitsrc/icsem_scripts (master)$ caput ICS-CPCI-EVR230:FrontUnivOut0-Src-SP 0
+Old : ICS-CPCI-EVR230:FrontUnivOut0-Src-SP 63
+New : ICS-CPCI-EVR230:FrontUnivOut0-Src-SP 0
+iocuser@bodhi2:~/gitsrc/icsem_scripts (master)$ caput ICS-CPCI-EVR230:Pul0-Evt-Trig0-SP 14
+Old : ICS-CPCI-EVR230:Pul0-Evt-Trig0-SP 14
+New : ICS-CPCI-EVR230:Pul0-Evt-Trig0-SP 14
+iocuser@bodhi2:~/gitsrc/icsem_scripts (master)$ caput ICS-CPCI-EVR230:Pul0-Width-SP 10000
+Old : ICS-CPCI-EVR230:Pul0-Width-SP  0
+New : ICS-CPCI-EVR230:Pul0-Width-SP  10000
+
+
+
+iocuser@bodhi2:~/gitsrc/icsem_scripts (master)$ caput ICS-CPCI-EVG220:Mxc0-Frequency-SP 1
+Old : ICS-CPCI-EVG220:Mxc0-Frequency-SP 14
+New : ICS-CPCI-EVG220:Mxc0-Frequency-SP 1
+iocuser@bodhi2:~/gitsrc/icsem_scripts (master)$ caput ICS-CPCI-EVR230:Pul0-Width-SP 200000
+Old : ICS-CPCI-EVR230:Pul0-Width-SP  10000
+New : ICS-CPCI-EVR230:Pul0-Width-SP  200000
+iocuser@bodhi2:~/gitsrc/icsem_scripts (master)$ caput ICS-CPCI-EVR230:Pul0-Width-SP 400000
+Old : ICS-CPCI-EVR230:Pul0-Width-SP  200000
+New : ICS-CPCI-EVR230:Pul0-Width-SP  400000
+iocuser@bodhi2:~/gitsrc/icsem_scripts (master)$ caput ICS-CPCI-EVG220:Mxc0-Frequency-SP 0.1
+Old : ICS-CPCI-EVG220:Mxc0-Frequency-SP 1
+New : ICS-CPCI-EVG220:Mxc0-Frequency-SP 0.1
+iocuser@bodhi2:~/gitsrc/icsem_scripts (master)$ caput ICS-CPCI-EVG220:Mxc0-Frequency-SP 0.2
+Old : ICS-CPCI-EVG220:Mxc0-Frequency-SP 0.1
+New : ICS-CPCI-EVG220:Mxc0-Frequency-SP 0.2
+iocuser@bodhi2:~/gitsrc/icsem_scripts (master)$ caput ICS-CPCI-EVG220:Mxc0-Frequency-SP 100
+Old : ICS-CPCI-EVG220:Mxc0-Frequency-SP 0.2
+New : ICS-CPCI-EVG220:Mxc0-Frequency-SP 100
+iocuser@bodhi2:~/gitsrc/icsem_scripts (master)$ caput ICS-CPCI-EVR230:Pul0-Width-SP 1000
+Old : ICS-CPCI-EVR230:Pul0-Width-SP  400000
+New : ICS-CPCI-EVR230:Pul0-Width-SP  1000
+iocuser@bodhi2:~/gitsrc/icsem_scripts (master)$ caput ICS-CPCI-EVR230:Pul0-Width-SP 400
+Old : ICS-CPCI-EVR230:Pul0-Width-SP  1000
+New : ICS-CPCI-EVR230:Pul0-Width-SP  400
+iocuser@bodhi2:~/gitsrc/icsem_scripts (master)$ caput ICS-CPCI-EVG220:Mxc0-Frequency-SP 1000
+Old : ICS-CPCI-EVG220:Mxc0-Frequency-SP 100
+New : ICS-CPCI-EVG220:Mxc0-Frequency-SP 1000
+iocuser@bodhi2:~/gitsrc/icsem_scripts (master)$ caput ICS-CPCI-EVR230:Pul0-Width-SP 30
+Old : ICS-CPCI-EVR230:Pul0-Width-SP  400
+New : ICS-CPCI-EVR230:Pul0-Width-SP  30
+iocuser@bodhi2:~/gitsrc/icsem_scripts (master)$ caput ICS-CPCI-EVG220:Mxc0-Frequency-SP 10000
+Old : ICS-CPCI-EVG220:Mxc0-Frequency-SP 1000
+New : ICS-CPCI-EVG220:Mxc0-Frequency-SP 10000
+iocuser@bodhi2:~/gitsrc/icsem_scripts (master)$ caput ICS-CPCI-EVR230:Pul0-Width-SP 3
+Old : ICS-CPCI-EVR230:Pul0-Width-SP  30
+New : ICS-CPCI-EVR230:Pul0-Width-SP  3
+iocuser@bodhi2:~/gitsrc/icsem_scripts (master)$ caput ICS-CPCI-EVG220:Mxc0-Frequency-SP 100000
+Old : ICS-CPCI-EVG220:Mxc0-Frequency-SP 10000
+New : ICS-CPCI-EVG220:Mxc0-Frequency-SP 100000
+iocuser@bodhi2:~/gitsrc/icsem_scripts (master)$ caput ICS-CPCI-EVR230:Pul0-Width-SP 0.3
+Old : ICS-CPCI-EVR230:Pul0-Width-SP  3
+New : ICS-CPCI-EVR230:Pul0-Width-SP  0.3
+iocuser@bodhi2:~/gitsrc/icsem_scripts (master)$ caput ICS-CPCI-EVG220:Mxc0-Frequency-SP 1000000
+Old : ICS-CPCI-EVG220:Mxc0-Frequency-SP 100000
+New : ICS-CPCI-EVG220:Mxc0-Frequency-SP 1e+06
+iocuser@bodhi2:~/gitsrc/icsem_scripts (master)$ 
+###
+# At this point I start seeing 
+#TS reset w/ old or invalid seconds 58208b70 (58208b6d 582084b2)
+#TS reset w/ old or invalid seconds 58208b7b (58208b72 58208b70)
+#TS reset w/ old or invalid seconds 58208b7f (58208b7c 58208b7b)
+#TS reset w/ old or invalid seconds 58208b86 (58208b83 58208b7f)
+# I think it may be because almost all the bandwidth is used by the event, so the timestamping broadcast is interrupted????
+###
+iocuser@bodhi2:~/gitsrc/icsem_scripts (master)$ caput ICS-CPCI-EVR230:Pul0-Width-SP 3
+Old : ICS-CPCI-EVR230:Pul0-Width-SP  0.3
+New : ICS-CPCI-EVR230:Pul0-Width-SP  3
+iocuser@bodhi2:~/gitsrc/icsem_scripts (master)$ caput ICS-CPCI-EVG220:Mxc0-Frequency-SP 100000
+Old : ICS-CPCI-EVG220:Mxc0-Frequency-SP 1e+06
+New : ICS-CPCI-EVG220:Mxc0-Frequency-SP 100000
+iocuser@bodhi2:~/gitsrc/icsem_scripts (master)$ 
+###
+#Back to normal
+#bodhi2> EVR ignoring invalid TS 58208b69 0003871f (expect 58208b67)
+#TS reset w/ old or invalid seconds 58208b70 (58208b6d 582084b2)
+#TS reset w/ old or invalid seconds 58208b7b (58208b72 58208b70)
+#TS reset w/ old or invalid seconds 58208b7f (58208b7c 58208b7b)
+#TS reset w/ old or invalid seconds 58208b86 (58208b83 58208b7f)
+#TS reset w/ old or invalid seconds 58208bb4 (58208b98 58208b86)
+#TS reset w/ old or invalid seconds 58208bbe (58208bb7 58208bb4)
+#TS reset w/ old or invalid seconds 58208bd6 (58208bc0 58208bbe)
+#TS reset w/ old or invalid seconds 58208bdf (58208bda 58208bd6)
+#TS reset w/ old or invalid seconds 58208be4 (58208be1 58208bdf)
+#TS reset w/ old or invalid seconds 58208bed (58208beb 58208be4)
+#TS reset w/ old or invalid seconds 58208c02 (58208bfd 58208bed)
+#TS reset w/ old or invalid seconds 58208c18 (58208c07 58208c02)
+#TS reset w/ old or invalid seconds 58208c2a (58208c19 58208c18)
+#TS becomes valid after fault 58208c2f
+#
+#bodhi2> 
+#bodhi2>
+###
+# No more messages like this
+###
