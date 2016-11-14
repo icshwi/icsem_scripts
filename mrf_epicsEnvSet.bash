@@ -19,7 +19,7 @@
 # Author : Jeong Han Lee
 # email  : han.lee@esss.se
 # Date   : 
-# version : 0.2.1
+# version : 0.2.2
 #
 # 
 # Generic : Global vaiables - readonly
@@ -89,7 +89,7 @@ function print_epicsEnvSet() {
     declare dev_name="${board_name}_DEV";
     declare func_name="${board_name}_FUNC";
     declare setup_func="";
-    declare e3_mrfioc2_ver="2.1.0";
+    declare e3_mrfioc2_ver="edit_me";
     declare e3_base_ver="3.14.12.5";
 
     if [[ $version == "new" ]]; then
@@ -97,40 +97,39 @@ function print_epicsEnvSet() {
 	 e3_base_ver="3.15.4";
     fi
 
-    
-
     pci_info=$(echo $pci_info | awk '{ print $1 }');
     
-    domain=$(echo $pci_info | cut -d: -f1)
-    bus=$(echo $pci_info    | cut -d: -f2)
-    dev=$(echo $pci_info    | cut -d: -f3 | cut -d. -f1)
-    func=$(echo $pci_info   | cut -d. -f2)
+    domain=$(echo $pci_info | cut -d: -f1);
+    bus=$(echo $pci_info    | cut -d: -f2);
+    dev=$(echo $pci_info    | cut -d: -f3 | cut -d. -f1);
+    func=$(echo $pci_info   | cut -d. -f2);
 
-    printf "\n\n%s\n" "------------ snip snip ------------";
-    printf "\n\n# ESS EPICS Environment";
+
+    printf "\n\n%s\n" ">>>>>>>>>>>>>>>>>>> snip snip >>>>>>>>>>>>>>>>>>>";
+    printf "\n# ESS EPICS Environment";
+    printf "\n\n#";
     printf "\n# iocsh -%s %s.cmd" "$e3_base_ver" "\"e3_startup_script\"";
     printf "\n# require mrfioc2,%s\n" "$e3_mrfioc2_ver";
-    printf "\n#--------------------------------------------------------\n";
-    printf "\nepicsEnvSet("\"SYS\""       "\"%s\"")" "$system_name"; 
-    printf "\nepicsEnvSet("\"%s\""       "\"%s\"")"  "$board_name" "$mrf_name"
-
-    printf "\nepicsEnvSet("\"%s\""   "\"0x%s\"")"    "$bus_name"   "$bus";
-    printf "\nepicsEnvSet("\"%s\""   "\"0x%s\"")"    "$dev_name"   "$dev";
-    printf "\nepicsEnvSet("\"%s\""  "\"0x%s\"")"     "$func_name"  "$func";
+    printf "\nepicsEnvSet("%12s"  "%12s")"    "\"SYS\""         "\"$system_name\""; 
+    printf "\nepicsEnvSet("%12s"  "%12s")"    "\"$board_name\"" "\"$mrf_name\""
+    printf "\nepicsEnvSet("%12s"  "%12s")"    "\"$bus_name\""   "\"0x$bus\"";
+    printf "\nepicsEnvSet("%12s"  "%12s")"    "\"$dev_name\""   "\"0x$dev\"";
+    printf "\nepicsEnvSet("%12s"  "%12s")"    "\"$func_name\""  "\"0x$func\"";
     if [[ $board_name == "EVG" ]]; then
+	printf "\n";
 	printf "\nmrmEvgSetupPCI("$\(%s\)", "$\(%s\)", "$\(%s\)", "$\(%s\)")" "$board_name" "$bus_name" "$dev_name" "$func_name";
     elif [[ $board_name == "EVR" ]]; then
-	printf "\nepicsEnvSet("\"%s\""   "\"0x%s\"")"    "$domain_name"   "$domain";
+	printf "\nepicsEnvSet("%12s"  "%12s")"   "\"$domain_name\""  "\"0x$domain\"";
+	printf "\n";
 	printf "\nmrmEvrSetupPCI("$\(%s\)", "$\(%s\)", "$\(%s\)", "$\(%s\)", "$\(%s\)")" "$board_name" "$domain_name" "$bus_name" "$dev_name" "$func_name";
     else
 	printf "No support on $s\n" "$board_name";
 	exit;
     fi
-
-    printf "\n# --------------------------------------------------------\n";
+    printf "\n";
     printf "\n# dbLoadRecords example";
     printf "\n# dbLoadRecords(\"%s\", \"DEVICE=\$(%s), SYS=\$(SYS)\")\n" "$epics_db" "$board_name" 
-    printf "\n%s\n\n" "------------ snip snip ------------";
+    printf "\n%s\n\n" "<<<<<<<<<<<<<<<<<<< snip snip <<<<<<<<<<<<<<<<<<<";
 }
 
 version=$1;

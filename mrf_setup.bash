@@ -39,6 +39,13 @@ set +a
 . ${SC_TOP}/bash_functions
 
 
+function show_mrf_boards() {
+    printf "\nWe've found the MRF boards as follows:";
+    printf "\n--------------------------------------\n";
+    lspci -nmmn | grep -E "\<(${PCI_VENDOR_ID_MRF})";
+    printf "\n";
+}
+
 function git_compile_mrf(){
 
     local func_name=${FUNCNAME[*]}; ini_func ${func_name};
@@ -129,6 +136,15 @@ function put_rules() {
     put_udev_rule;
 }
 
+function print_info() {
+    
+    for info in "${INFO_list[@]}"
+    do
+	printf "%2s: %s\n" "$index" "$info";
+	let "index = $index + 1";
+    done
+}
+
 
 INFO_list+=("SCRPIT      : ${SC_SCRIPT}");
 INFO_list+=("SCRIPT NAME : ${SC_SCRIPTNAME}");
@@ -138,11 +154,6 @@ INFO_list+=("LOGDATE     : ${SC_LOGDATE}");
 
 DO="$1"
 
-printf "\nWe've found the MRF boards as follows:\n";
-
-lspci -nmmn | grep -E "\<(${PCI_VENDOR_ID_MRF})";
-
-printf "\n";
 
 case "$DO" in     
 
@@ -151,23 +162,31 @@ case "$DO" in
 	yum_install_mrf;
 	modprobe_mrf;
 	put_rules;
+	printf_info;
 	;;
     src)
 	${SUDO_CMD} -v;
 	git_compile_mrf;
 	modprobe_mrf;
 	put_rules;
+	printf_info;
 	;;
-    rules)
+    rule)
 	${SUDO_CMD} -v;
 	put_rules;
+	printf_info;
+	;;
+    show)
+	show_mrf_boards;
 	;;
     *) 	
 	echo "">&2         
 	echo "usage: $0 <arg>">&2 
 	echo ""
-        echo "          arg   : explaination">&2 
-	echo "          ---     ------------">&2
+        echo "          <arg> : info">&2 
+	echo ""
+	echo "          show  : show the found mrf boards information ">&2
+	echo ""
 	echo "          pac   : mrf package from ESS (do not use now) ">&2
 	echo "                  We are working on this.... ">&2
         echo "" 
@@ -175,17 +194,11 @@ case "$DO" in
 	echo "                  ${GIT_SRC_URL}/${GIT_SRC_NAME}">2
 	echo "                  tag name : ${GIT_TAG_NAME}">&2
 	echo "" 
-	echo "          rules : put only the mrf kernel and udev rules ">&2
-    	echo >&2 	
+	echo "          rule : put only the mrf kernel and udev rules ">&2
+    	echo "">&2 	
 	exit 0         
 	;; 
 esac
-
-for info in "${INFO_list[@]}"
-do
-    printf "%2s: %s\n" "$index" "$info";
-    let "index = $index + 1";
-done
 
 
 exit

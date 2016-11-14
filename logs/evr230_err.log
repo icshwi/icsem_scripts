@@ -1,0 +1,23 @@
+PCI interrupt connected!
+epicsEnvSet(       "EVR"      "EVR230")
+epicsEnvSet(   "EVR_BUS"        "0x10")
+epicsEnvSet(   "EVR_DEV"        "0x09")
+epicsEnvSet(  "EVR_FUNC"         "0x0")
+epicsEnvSet("EVR_DOMAIN"      "0x0000")
+mrmEvrSetupPCI(EVR230, 0x0000, 0x10, 0x09, 0x0)
+Device EVR230 10:9.0
+Using IRQ 17
+FPGA version 0x00000000
+Found type 0 which does not correspond to EVR type 0x1.
+Firmware version: 00000000
+# --------------------------------------------------------
+# Set Heart Beat Event (Evtcode, Fre, TrigSrc7) (122,1,1)
+# Set 14 Hz      Event (Evtcode, Fre, TrigSrc0) (14, 14, 1)
+# 
+dbLoadRecords("evg-cpci.db", "DEVICE=EVG220, SYS=DG, TrigEvt0-EvtCode-SP=122, Mxc2-Frequency-SP=1, Mxc2-TrigSrc7-SP=1, TrigEvt0-EvtCode-SP=14, Mxc0-Frequency-SP=14, Mxc0-TrigSrc0-SP=1, SoftEvt-Enable-Sel=1")
+dbLoadRecords("evr-cpci-230.db", "DEVICE=EVR230, SYS=DG")
+#Generate trigger signals
+#dbLoadRecords("evr-softEvent.template", "DEVICE=$(EVR), SYS=$(SYS), CODE=14, EVT=14")
+#dbLoadRecords("evr-pulserMap.template", "DEVICE=$(EVR), SYS=$(SYS), PID=0, F=Trig, ID=0, EVT=14")
+iocInit
+Starting iocInit
