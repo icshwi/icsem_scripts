@@ -1,7 +1,9 @@
 #  -*- mode: epics -*-
 # This file should be used with EPICS base 3.15.4 and mrfioc2 (han branch)
 # With current EEE 1.8.2, the proper command is 
+#
 # iocsh -3.14.12.5 cpci-evg-220/david-cpci-evg220_14Hz-evr230.cmd
+#
 #
 require mrfioc2,iocuser
 
@@ -15,8 +17,10 @@ epicsEnvSet(  "EVG_FUNC"         "0x0")
 
 mrmEvgSetupPCI($(EVG), $(EVG_BUS), $(EVG_DEV), $(EVG_FUNC))
 
+# Fake timestamp source for testing without real hardware timestamp source (e.g., GPS recevier)
+mrmEvgSoftTime($(EVG))
 
-epicsEnvSet(      "EVR0"         "EVR")
+epicsEnvSet(       "EVR0"        "EVR")
 epicsEnvSet(   "EVR0_BUS"       "0x10")
 epicsEnvSet(   "EVR0_DEV"       "0x09")
 epicsEnvSet(  "EVR0_FUNC"        "0x0")
@@ -30,6 +34,9 @@ epicsEnvSet("HWEVT"    "14")
 epicsEnvSet("EVTFREQ"  "14")
 epicsEnvSet("EPICSEVT" "14")
 
+# Fake Timestamp
+epicsEnvSet("EVRTSE"   "-2")
+
 # Don't change HBEVT 
 epicsEnvSet("HBEVT"   "122")
 # One can change, but don't change it.
@@ -42,9 +49,6 @@ epicsEnvSet("HBFREQ"    "1")
 # 
 dbLoadRecords("evg-cpci.db", "DEVICE=$(EVG), SYS=$(SYS), TrigEvt7-EvtCode-SP=$(HBEVT), Mxc2-Frequency-SP=$(HBFREQ), Mxc2-TrigSrc7-SP=1, TrigEvt0-EvtCode-SP=$(HWEVT), Mxc0-Frequency-SP=$(EVTFREQ), Mxc0-TrigSrc0-SP=1, SoftEvt-Enable-Sel=1")
 
-epicsEnvSet("EVRTSE" "-2")
-
-
 dbLoadRecords("evr-cpci-230.db", "DEVICE=$(EVR0), SYS=$(SYS)")
 #Generate trigger signals
 # Time Stamping on EVR
@@ -53,7 +57,6 @@ dbLoadRecords("evr-softEvent.template", "DEVICE=$(EVR0), SYS=$(SYS), CODE=$(EPIC
 # Trigger Output on EVR
 dbLoadRecords("evr-pulserMap.template", "DEVICE=$(EVR0), SYS=$(SYS), PID=0, F=Trig, ID=0, EVT=$(HWEVT)")
 
-
 iocInit
 
 # EVR
@@ -61,13 +64,10 @@ iocInit
 dbpf $(SYS)-$(EVR0):Time-I.TSE  $(EVRTSE)
 
 # Which EVNT should we use? I guess the EPICS EventNumber EPICSEVT
-dbpf $(SYS)-$(EVR0):Time-I.EVNT 14
+dbpf $(SYS)-$(EVR0):Time-I.EVNT $(EPICSEVT)
 
-
-# EVG
-# Fake timestamp source for testing without real hardware timestamp source (e.g., GPS recevier)
-mrmEvgSoftTime("$(EVG)")
-sleep(5)
+# Mandatory if Fake timestamp source for testing without real hardware timestamp source (e.g., GPS recevier)
+#
 dbpf $(SYS)-$(EVG):SyncTimestamp-Cmd 1
 
 
