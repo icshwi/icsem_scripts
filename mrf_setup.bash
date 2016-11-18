@@ -191,7 +191,7 @@ case "$DO" in
 	echo "                  We are working on this.... ">&2
         echo "" 
 	echo "          src   : compile kernel module from git repository ">&2
-	echo "                  ${GIT_SRC_URL}/${GIT_SRC_NAME}">2
+	echo "                  ${GIT_SRC_URL}/${GIT_SRC_NAME}">&2
 	echo "                  tag name : ${GIT_TAG_NAME}">&2
 	echo "" 
 	echo "          rule : put only the mrf kernel and udev rules ">&2

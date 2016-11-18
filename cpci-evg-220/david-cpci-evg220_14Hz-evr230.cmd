@@ -66,10 +66,15 @@ dbpf $(SYS)-$(EVR0):Time-I.TSE  $(EVRTSE)
 # Which EVNT should we use? I guess the EPICS EventNumber EPICSEVT
 dbpf $(SYS)-$(EVR0):Time-I.EVNT $(EPICSEVT)
 
+
+
+
+dbl > $(IOC).pvlist
+
+sleep(5)
+
 # Mandatory if Fake timestamp source for testing without real hardware timestamp source (e.g., GPS recevier)
 #
 dbpf $(SYS)-$(EVG):SyncTimestamp-Cmd 1
 
-
-dbl > $(IOC)-$(SYS).pvlist
 
