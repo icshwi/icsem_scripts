@@ -20,7 +20,7 @@
 # Author : Jeong Han Lee
 # email  : han.lee@esss.se
 # Date   : 
-# version : 0.2.0
+# version : 0.2.1
 #
 # Generic : Global vaiables - readonly
 #
@@ -162,19 +162,19 @@ case "$DO" in
 	yum_install_mrf;
 	modprobe_mrf;
 	put_rules;
-	printf_info;
+	print_info;
 	;;
     src)
 	${SUDO_CMD} -v;
 	git_compile_mrf;
 	modprobe_mrf;
 	put_rules;
-	printf_info;
+	print_info;
 	;;
     rule)
 	${SUDO_CMD} -v;
 	put_rules;
-	printf_info;
+	print_info;
 	;;
     show)
 	show_mrf_boards;
