@@ -1,0 +1,118 @@
+root@localhost:~/icsem_scripts/vme-evg-230# iocsh -3.14.12.5 vme-evg230.cmd 
+
+/opt/epics/bases/base-3.14.12.5/bin/eldk56-e500v2/softIoc -D /opt/epics/bases/base-3.14.12.5/dbd/softIoc.dbd /tmp/iocsh.startup.3114
+#date="Tue Jan 31 11:32:37 CET 2017"
+#user="root"
+#PWD="/home/root/icsem_scripts/vme-evg-230"
+#EPICSVERSION="3.14.12.5"
+#EPICS_HOST_ARCH="eldk56-e500v2"
+#SHELLBOX=""
+#EPICS_CA_ADDR_LIST=""
+#EPICS_MODULE_INCLUDE_PATH=".:/usr/lib:/lib"
+dlload         /opt/epics/modules/environment/1.4.1/3.14.12.5/lib/eldk56-e500v2/libenvironment.so
+dbLoadDatabase /opt/epics/modules/environment/1.4.1/3.14.12.5/dbd/environment.dbd
+environment_registerRecordDeviceDriver
+< "vme-evg230.cmd"
+#  -*- mode: epics -*-
+# This file should be used with EPICS base 3.14.12.5 and mrfioc2 (2.7.13)
+#
+# With current EEE 1.8.2, the proper command is 
+#
+# iocsh -3.14.12.5 vme-evg-230/vme-evg230-evr230.cmd
+#
+require pev,0.1.2
+require: pev depends on pevdrv (4.66+).
+require: Loading library /opt/epics/modules/pevdrv/4.66.0/3.14.12.5/lib/eldk56-e500v2/libpevdrv.so.
+require: pev depends on regdev (0.1+).
+require: Loading library /opt/epics/modules/regdev/0.1.0/3.14.12.5/lib/eldk56-e500v2/libregdev.so.
+require: Adding /opt/epics/modules/regdev/0.1.0/db.
+require: Loading /opt/epics/modules/regdev/0.1.0/3.14.12.5/dbd/regdev.dbd.
+require: Calling regdev_registerRecordDeviceDriver function.
+require: Loading library /opt/epics/modules/pev/0.1.2/3.14.12.5/lib/eldk56-e500v2/libpev.so.
+require: Adding /opt/epics/modules/pev/0.1.2/db.
+require: Loading /opt/epics/modules/pev/0.1.2/3.14.12.5/dbd/pev.dbd.
+require: Calling pev_registerRecordDeviceDriver function.
+require mrfioc2,2.7.13
+require: mrfioc2 depends on devlib2 (2.7+).
+require: Loading library /opt/epics/modules/devlib2/2.7.0/3.14.12.5/lib/eldk56-e500v2/libdevlib2.so.
+require: Loading /opt/epics/modules/devlib2/2.7.0/3.14.12.5/dbd/devlib2.dbd.
+require: Calling devlib2_registerRecordDeviceDriver function.
+require: Loading library /opt/epics/modules/mrfioc2/2.7.13/3.14.12.5/lib/eldk56-e500v2/libmrfioc2.so.
+require: Adding /opt/epics/modules/mrfioc2/2.7.13/db.
+require: Adding /opt/epics/modules/mrfioc2/2.7.13/startup.
+require: Loading /opt/epics/modules/mrfioc2/2.7.13/3.14.12.5/dbd/mrfioc2.dbd.
+require: Calling mrfioc2_registerRecordDeviceDriver function.
+epicsEnvSet("IOC" "SD-TS-IOC")
+epicsEnvSet("SYS"           "TS")
+epicsEnvSet("EVG"         "EVG0")
+epicsEnvSet("EVG_VMESLOT"     "5")
+mrmEvgSetupVME(EVG0, 5, 0x100000, 1, 0x01)    
+##### Setting up MRF EVG in VME Slot 5 #####
+Found Vendor: 00000eb2
+Board: 454700e6
+Revision: 00000000
+Warning: EVG not in power on state! (001000f4)
+FPGA version: 22000005
+Firmware version: 00000005
+Sub-units:
+ FrontInp: 2, FrontOut: 6
+ UnivInp: 4, UnivOut: 4
+ RearInp: 16
+ RearOut: 0
+ Mxc: 8, Event triggers: 8, DBus bits: 8
+Found EVG0:SFP0 SFP transceiver
+Flash access: Timeout reached while waiting for transmitter to be empty!
+IRQ Level: 241
+IRQ Vector: 1
+csrCpuAddr : 0xb6f80000
+regCpuAddr : 0xb6e00000
+reCpuAddr2 : (nil)
+# Fake timestamp source for testing without real hardware timestamp source (e.g., GPS recevier)
+mrmEvgSoftTime(EVG0)
+Starting EVG Software based time provider...
+pthread_attr_setstacksize error Invalid argument
+mrmEvgSoftTimestamp: Could not retrive timestamp...
+# ESS ICS Definition
+epicsEnvSet("HWEVT"    "14")
+epicsEnvSet("EVTFREQ"  "14")
+epicsEnvSet("EPICSEVT" "14")
+# Don't change HBEVT 
+epicsEnvSet("HBEVT"   "122")
+# One can change, but don't change it.
+epicsEnvSet("HBFREQ"    "1")
+# --------------------------------------------------------
+# Set Heart Beat Event (Evtcode, Fre, TrigSrc7) (122, 1, 1)
+# Set 14 Hz      Event (Evtcode, Fre, TrigSrc0) (14, 14, 1)
+# 
+dbLoadRecords("evg-vme-230.db", "DEVICE=EVG0, SYS=TS, TrigEvt7-EvtCode-SP=122, Mxc2-Frequency-SP=1, Mxc2-TrigSrc7-SP=1, TrigEvt0-EvtCode-SP=14, Mxc0-Frequency-SP=14, Mxc0-TrigSrc0-SP=1, SoftEvt-Enable-Sel=1")
+iocInit
+Starting iocInit
+############################################################################
+## EPICS R3.14.12.5-2015-08 $Date: Tue 2015-03-24 09:57:35 -0500$
+## EPICS Base built Oct  9 2015
+############################################################################
+iocRun: All initialization complete
+dbl > SD-TS-IOC.pvlist
+sleep(5)
+mrmEvgSoftTimestamp: Could not retrive timestamp...
+mrmEvgSoftTimestamp: Could not retrive timestamp...
+Starting timestamping
+epicsTime: Tue Jan 31 2017 11:32:41.000000000
+mrmEvgSoftTimestamp: Could not retrive timestamp...
+NTP time:
+epicsTime: Tue Jan 31 2017 11:32:42.000044838
+EVG time:
+epicsTime: Tue Jan 31 2017 11:32:43.000000000
+----Timestamping Error of -0.999955 Secs----
+NTP time:
+epicsTime: Tue Jan 31 2017 11:32:43.000051870
+EVG time:
+epicsTime: Tue Jan 31 2017 11:32:44.000000000
+----Timestamping Error of -0.999948 Secs----
+# Mandatory if Fake timestamp source for testing without real hardware timestamp source (e.g., GPS recevier)
+#
+dbpf TS-EVG0:SyncTimestamp-Cmd 1
+DBR_STRING:         
+epicsEnvSet IOCSH_PS1,"SD-TS-IOC> "
+SD-TS-IOC> 
+
