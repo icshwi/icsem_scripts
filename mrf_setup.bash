@@ -111,10 +111,9 @@ function put_udev_rule(){
 
     local func_name=${FUNCNAME[*]};  ini_func ${func_name};
     local udev_rules_dir="/etc/udev/rules.d"
-    local rule="SUBSYSTEM==\"uio\", ATTR{name}==\"mrf-pci\", MODE=\"0666\"";
-    local target="${udev_rules_dir}/${MRF_KMOD_NAME}.rules";
-
-
+    local rule="KERNEL==\"uio*\", ATTR{name}==\"mrf-pci\", MODE=\"0666\"";
+    local target="${udev_rules_dir}/99-${MRF_KMOD_NAME}ioc2.rules";
+ 
     # If ${MRF_KMOD_NAME}.rules exists, it will be overwritten.
     # can access the udev rules via udevadm info --query=all /dev/uio* --attribute-walk
     # 
