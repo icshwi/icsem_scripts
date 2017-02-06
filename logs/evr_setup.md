@@ -25,7 +25,9 @@ centos was determined.
 ```
 iocuser@localhost: pciids (master)$ lspci -nmmn | grep -E "\<(1a3e)"
 05:00.0 "Signal processing controller [1180]" "Xilinx Corporation [10ee]" "XILINX PCI DEVICE [7011]" "Micro-Research Finland Oy [1a3e]" "MTCA Event Receiver 300 [132c]"
-
+```
+[iocuser@localhost ~]$ lspci -nmmn | grep -E "\<(1a3e)"
+04:00.0 "Signal processing controller [1180]" "Xilinx Corporation [10ee]" "XILINX PCI DEVICE [7011]" "Micro-Research Finland Oy [1a3e]" "PCIE Event Receiver 300(DC) [172c]"
 ```
 
 ## Setup MRF environment
@@ -330,5 +332,100 @@ Set EVR clock 88052500.000000
 iocRun: All initialization complete
 epicsEnvSet IOCSH_PS1,"localhost> "
 localhost> 
+
+
+
+
+[iocuser@localhost icsem_scripts]$ bash mrf_epicsEnvSet.bash 
+
+
+>>>>>>>>>>>>>>>>>>> snip snip >>>>>>>>>>>>>>>>>>>
+
+# ESS EPICS Environment
+
+#
+# iocsh -3.14.12.5 "e3_startup_script".cmd
+# require mrfioc2,edit_me
+
+epicsEnvSet(       "SYS"     "edit_me")
+epicsEnvSet(       "EVR"     "edit_me")
+epicsEnvSet(   "EVR_BUS"        "0x04")
+epicsEnvSet(   "EVR_DEV"        "0x00")
+epicsEnvSet(  "EVR_FUNC"         "0x0")
+epicsEnvSet("EVR_DOMAIN"      "0x0000")
+
+mrmEvrSetupPCI($(EVR), $(EVR_DOMAIN), $(EVR_BUS), $(EVR_DEV), $(EVR_FUNC))
+
+# dbLoadRecords example
+# dbLoadRecords("edit_me", "DEVICE=$(EVR), SYS=$(SYS)")
+
+<<<<<<<<<<<<<<<<<<< snip snip <<<<<<<<<<<<<<<<<<<
+
+[iocuser@localhost icsem_scripts]$ bash mrf_setup.bash show
+
+We've found the MRF boards as follows:
+--------------------------------------
+04:00.0 "Signal processing controller [1180]" "Xilinx Corporation [10ee]" "XILINX PCI DEVICE [7011]" "Micro-Research Finland Oy [1a3e]" "MTCA Event Receiver 300 [132c]"
+
+[iocuser@localhost icsem_scripts]$ ls
+bash_functions  cpci-evg-230     LICENSE  m-epics-mrfioc2                       mrf_env.conf          mrf_setup.bash  pcie-evr-300dc        README.md  tests
+cpci-evg-220    git_commands.md  logs     m-epics-mrfioc2_2017Feb06-1625-28CET  mrf_epicsEnvSet.bash  mtca-evr-300    pcie-evr-300dc-2-old  scripts    vme-evg-230
+[iocuser@localhost icsem_scripts]$ cd pcie-evr-300dc
+[iocuser@localhost pcie-evr-300dc]$ ls
+test_evr-pcie-300dc.cmd  test_evr-pcie-300dc.cmd~
+[iocuser@localhost pcie-evr-300dc]$ iocsh test_evr-pcie-300dc.cmd
+/opt/epics/bases/base-3.15.4/bin/centos7-x86_64/softIoc -D /opt/epics/bases/base-3.15.4/dbd/softIoc.dbd /tmp/iocsh.startup.2356
+#date="Mon Feb  6 16:29:26 CET 2017"
+#user="iocuser"
+#PWD="/home/iocuser/ics_gitsrc/icsem_scripts/pcie-evr-300dc"
+#EPICSVERSION="3.15.4"
+#EPICS_HOST_ARCH="centos7-x86_64"
+#SHELLBOX=""
+#EPICS_CA_ADDR_LIST=""
+#EPICS_MODULE_INCLUDE_PATH=".:/usr/lib64:/usr/lib:/lib64:/lib"
+dlload         /opt/epics/modules/environment/1.8.2/3.15.4/lib/centos7-x86_64/libenvironment.so
+dbLoadDatabase /opt/epics/modules/environment/1.8.2/3.15.4/dbd/environment.dbd
+environment_registerRecordDeviceDriver
+< "test_evr-pcie-300dc.cmd"
+#  -*- mode: epics -*-
+# $ iocsh test_evr-mtca-300.cmd
+require mrfioc2,2.7.13
+require: mrfioc2 depends on devlib2 (2.7+).
+require: Loading library /opt/epics/modules/devlib2/2.7.0/3.15.4/lib/centos7-x86_64/libdevlib2.so.
+require: Loading /opt/epics/modules/devlib2/2.7.0/3.15.4/dbd/devlib2.dbd.
+require: Calling devlib2_registerRecordDeviceDriver function.
+require: Loading library /opt/epics/modules/mrfioc2/2.7.13/3.15.4/lib/centos7-x86_64/libmrfioc2.so.
+require: Adding /opt/epics/modules/mrfioc2/2.7.13/db.
+require: Adding /opt/epics/modules/mrfioc2/2.7.13/startup.
+require: Loading /opt/epics/modules/mrfioc2/2.7.13/3.15.4/dbd/mrfioc2.dbd.
+require: Calling mrfioc2_registerRecordDeviceDriver function.
+epicsEnvSet(       "SYS"        "PCIE")
+epicsEnvSet(       "EVR"        "EVR0")
+epicsEnvSet(   "EVR_BUS"        "0x04")
+epicsEnvSet(   "EVR_DEV"        "0x00")
+epicsEnvSet(  "EVR_FUNC"         "0x0")
+epicsEnvSet("EVR_DOMAIN"      "0x0000")
+mrmEvrSetupPCI(EVR0, 0x0000, 0x04, 0x00, 0x0)
+Device EVR0 4:0.0
+Using IRQ 18
+Setting magic LE number!
+FPGA version 0x17000205
+Firmware version: 00000205
+Found EVR0:SFP0 SFP transceiver
+PCIe: Out FP:0 FPUNIV:16 RB:0 IFP:0 GPIO:0
+dbLoadRecords("evr-pcie-300.db", "DEVICE=EVR0, SYS=PCIE, Link-Clk-SP=88.0525")
+iocInit
+Starting iocInit
+############################################################################
+## EPICS R3.15.4-2016-05 $$Date$$
+## EPICS Base built May 31 2016
+############################################################################
+PCIE-EVR0:Time-Src-Sel_: read error: TS Clock rate invalid
+Set EVR clock 88052500.000000
+iocRun: All initialization complete
+epicsEnvSet IOCSH_PS1,"localhost> "
+localhost> 
+
+
 ```
 
