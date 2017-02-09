@@ -25,7 +25,6 @@ centos was determined.
 ```
 iocuser@localhost: pciids (master)$ lspci -nmmn | grep -E "\<(1a3e)"
 05:00.0 "Signal processing controller [1180]" "Xilinx Corporation [10ee]" "XILINX PCI DEVICE [7011]" "Micro-Research Finland Oy [1a3e]" "MTCA Event Receiver 300 [132c]"
-```
 [iocuser@localhost ~]$ lspci -nmmn | grep -E "\<(1a3e)"
 04:00.0 "Signal processing controller [1180]" "Xilinx Corporation [10ee]" "XILINX PCI DEVICE [7011]" "Micro-Research Finland Oy [1a3e]" "PCIE Event Receiver 300(DC) [172c]"
 ```
