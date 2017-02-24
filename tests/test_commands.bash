@@ -15,17 +15,33 @@
 #  You should have received a copy of the GNU General Public License along with
 #  this program. If not, see https://www.gnu.org/licenses/gpl-2.0.txt
 #
-# Author : Javier Cereijo Garcia 
+# Author : Javier Cereijo Garcia
+#          Jeong Han LEe
 # email  :
 # Date   : 
-# version : 0.0.1
+# version : 0.0.2
 #
 # 
 
 # Automatic test of EVG and EVR
 ###
-EVG=$1
-EVR=$2
+
+EVR=$1
+EVG=$2
+
+case "$2" in
+    icslab)
+	#EVG="SYS0-EVG0"
+	# I am not sure it is OK to change the EVG configuration in the ICS lab
+	# so, postpone it. 
+	EVG="$2"
+	;;
+    *)
+	EVG="$2"
+	;;
+esac
+
+
 
 # We can check the EVG and EVR link status and the link clock setting.
 echo caget ${EVR}:Link-Sts

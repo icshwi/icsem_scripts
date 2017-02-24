@@ -3,10 +3,10 @@
 
 require mrfioc2,2.7.13
 
-epicsEnvSet(       "SYS"     "MTCA424")
+epicsEnvSet(       "SYS"     "MTCA425")
 
 epicsEnvSet(       "EVR"        "EVR0")
-epicsEnvSet(   "EVR_BUS"        "0x10")
+epicsEnvSet(   "EVR_BUS"        "0x08")
 epicsEnvSet(   "EVR_DEV"        "0x00")
 epicsEnvSet(  "EVR_FUNC"         "0x0")
 epicsEnvSet("EVR_DOMAIN"      "0x0000")
