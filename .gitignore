@@ -8,5 +8,6 @@ mrfioc*
 .#*
 *.pvlist
 */*.pvlist
+m-kmod-*
 
 
