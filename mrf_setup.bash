@@ -46,6 +46,47 @@ function show_mrf_boards() {
     printf "\n";
 }
 
+
+function git_cross_compile_mrf() {
+
+    local func_name=${FUNCNAME[*]}; ini_func ${func_name};
+    #
+    #
+    #    https://github.com/jeonghanlee/mrfioc2
+    # This is the tentative repository, which I hacked based on
+    # m-epics-mrfioc2
+
+    local git_src_dir=${SC_TOP}/${GIT_SRC_NAME};
+    local mrf_kersrc_dir=${git_src_dir}/mrmShared/linux;
+
+    git_clone "${git_src_dir}" "${GIT_SRC_URL}" "${GIT_SRC_NAME}" "${GIT_TAG_NAME}";
+
+
+    # We need the specified GIT HASH, because currently we have the mixed PCIE-EVR300DC
+    # Device IDs (132c and 172c). Technically 132c is belong to MTCA EVR300.
+    # In addtion, PCIE-EVR-300 also has 172C.
+    #
+    # https://bitbucket.org/europeanspallationsource/m-epics-mrfioc2/commits/65b4e79a2c8384ef3446c7337fd3d3f06574feb2
+    #
+    # Niklas Claesson  committed 65b4e79 Merge
+    # 2017-01-27
+    # Merged in han (pull request #2)
+
+    pushd ${git_src_dir}
+    git checkout "${GIT_HASH}"
+    popd
+
+    local arch=powerpc
+    local cc=/opt/fsl-qoriq/2.0/sysroots/x86_64-fslsdk-linux/usr/bin/powerpc64-fsl-linux/powerpc64-fsl-linux-	
+    local kerneldir=/opt/fsl-qoriq/2.0/sysroots/ppc64e6500-fsl-linux/usr/src/kernel
+
+    pushd ${mrf_kersrc_dir}
+    ${SUDO_CMD} make ARCH=${arch} CROSS_COMPILE=${cc} KERNELDIR=${kerneldir} modules 
+    popd
+    #
+    end_func ${func_name};
+
+}
 function git_compile_mrf(){
 
     local func_name=${FUNCNAME[*]}; ini_func ${func_name};
@@ -193,6 +234,11 @@ case "$DO" in
     show)
 	show_mrf_boards;
 	;;
+    cc_src)
+        ${SUDO_CMD} -v;
+        git_cross_compile_mrf;
+	;;
+
     *) 	
 	echo "">&2         
 	echo "usage: $0 <arg>">&2 
