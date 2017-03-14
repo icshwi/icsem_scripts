@@ -76,17 +76,20 @@ function git_cross_compile_mrf() {
     git checkout "${GIT_HASH}"
     popd
 
-    local arch=powerpc
-    local cc=/opt/fsl-qoriq/2.0/sysroots/x86_64-fslsdk-linux/usr/bin/powerpc64-fsl-linux/powerpc64-fsl-linux-	
-    local kerneldir=/opt/fsl-qoriq/2.0/sysroots/ppc64e6500-fsl-linux/usr/src/kernel
+    local arch=${ARCH}
+    local cc=${CROSS_COMPILE}	
+    local kerneldir=${KERNELDIR}
+    local install_mod_path=${TARGET_ROOTFS}
 
     pushd ${mrf_kersrc_dir}
-    ${SUDO_CMD} make ARCH=${arch} CROSS_COMPILE=${cc} KERNELDIR=${kerneldir} modules 
+    ${SUDO_CMD} make ARCH=${arch} CROSS_COMPILE=${cc} KERNELDIR=${kerneldir} INSTALL_MOD_PATH=${install_mod_path} modules modules_install clean
     popd
     #
     end_func ${func_name};
 
 }
+
+
 function git_compile_mrf(){
 
     local func_name=${FUNCNAME[*]}; ini_func ${func_name};
@@ -152,13 +155,22 @@ function modprobe_mrf(){
 function put_mrf_rule(){
 
     local func_name=${FUNCNAME[*]};  ini_func ${func_name};
-    local module_load_dir="/etc/modules-load.d";
+    local target_rootfs=$1
+
+    local module_load_dir="${target_rootfs}/etc/modules-load.d";
+
+    local isDir=$(checkIfDir ${module_load_dir})
+    if [[ $isDir -eq "$NON_EXIST" ]]; then
+	mkdir -p ${module_load_dir};
+    fi
     local rule=${MRF_KMOD_NAME};
     local target="${module_load_dir}/${MRF_KMOD_NAME}.conf";
 
     printf "Put the rule : %s in %s to load the mrf module at boot time.\n" "$rule" "$target";
     printf_tee "$rule" "$target";
 
+    cat_file ${target};
+	
     end_func ${func_name};
 }
 
@@ -166,7 +178,8 @@ function put_mrf_rule(){
 function put_udev_rule(){
 
     local func_name=${FUNCNAME[*]};  ini_func ${func_name};
-    local udev_rules_dir="/etc/udev/rules.d"
+    local target_rootfs=$1
+    local udev_rules_dir="${target_rootfs}/etc/udev/rules.d"
     local rule="KERNEL==\"uio*\", ATTR{name}==\"mrf-pci\", MODE=\"0666\"";
     local target="${udev_rules_dir}/99-${MRF_KMOD_NAME}ioc2.rules";
  
@@ -182,13 +195,16 @@ function put_udev_rule(){
     # 
     printf "Put the rule : %s in %s to be accessible via an user.\n" "$rule" "$target";
     printf_tee "$rule" "$target";
+
+    cat_file ${target}
     end_func ${func_name};
 }
 
 
 function put_rules() {
-    put_mrf_rule;
-    put_udev_rule;
+    local target_rootfs=$1
+    put_mrf_rule ${target_rootfs} ;
+    put_udev_rule ${target_rootfs} ;
 }
 
 function print_info() {
@@ -207,8 +223,10 @@ INFO_list+=("SCRIPT TOP  : ${SC_TOP}");
 INFO_list+=("LOGDATE     : ${SC_LOGDATE}");
 
 
-DO="$1"
 
+
+
+DO="$1"
 
 case "$DO" in     
 
@@ -237,8 +255,8 @@ case "$DO" in
     cc_src)
         ${SUDO_CMD} -v;
         git_cross_compile_mrf;
+        put_rules ${TARGET_ROOTFS};
 	;;
-
     *) 	
 	echo "">&2         
 	echo "usage: $0 <arg>">&2 

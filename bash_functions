@@ -21,6 +21,28 @@
 #  Date    : Friday, November 11 15:10:58 CET 2016
 #  Version : 0.0.1
 
+
+ROOT_UID=0 
+E_NOTROOT=101
+EXIST=1
+NON_EXIST=0
+
+
+
+function pushd() { builtin pushd "$@" > /dev/null; }
+function popd()  { builtin popd  "$@" > /dev/null; }
+
+function __ini_func() { printf "\n>>>> You are entering in  : %s\n" "${1}"; }
+function __end_func() { printf "\n<<<< You are leaving from : %s\n" "${1}"; }
+
+function __checkstr() {
+    if [ -z "$1" ]; then
+	printf "%s : input variable is not defined \n" "${FUNCNAME[*]}"
+	exit 1;
+    fi
+}
+
+
 function ini_func() { sleep 1; printf "\n>>>> You are entering in  : %s\n" "${1}"; }
 function end_func() { sleep 1; printf "\n<<<< You are leaving from : %s\n" "${1}"; }
 
@@ -77,4 +99,64 @@ function git_clone() {
 
     end_func ${func_name};
 }
+
+
+
+
+function checkIfDir() {
+
+    local dir=$1
+    local result=""
+    if [ ! -d "$dir" ]; then
+	result=$NON_EXIST
+	# doesn't exist
+    else
+	result=$EXIST
+	# exist
+    fi
+    echo "${result}"
+
+}
+
+function checkIfFile() {
+
+    local file=$1
+    local result=""
+    if [ ! -e "$file" ]; then
+	result=$NON_EXIST
+	# doesn't exist
+    else
+	result=$EXIST
+	# exist
+    fi
+    echo "${result}"	 
+}
+
+
+
+function checkIfVar() {
+
+    local var=$1
+    local result=""
+    if [ -z "$var" ]; then
+	result=$NON_EXIST
+	# doesn't exist
+    else
+	result=$EXIST
+	# exist
+    fi
+    echo "${result}"	 
+}
+
+
+
+
+function cat_file () {
+    local func_name=${FUNCNAME[*]}; __ini_func ${func_name};
+    local file=$1
+
+    cat $file
+    __end_func ${func_name};
+}
+
 
